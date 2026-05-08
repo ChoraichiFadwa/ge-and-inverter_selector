@@ -109,7 +109,7 @@ st.markdown("""
 # =========================================================
 col_reset1, col_reset2 = st.columns([6, 1])
 with col_reset2:
-    if st.button("🔄 Réinitialiser", use_container_width=True):
+    if st.button("Réinitialiser", use_container_width=True):
         st.session_state.resultat_final = None
         st.session_state.choix_confirme = False
         st.session_state.groupe_confirme = None
@@ -246,12 +246,12 @@ df_fonctions = pd.DataFrame(FONCTIONS)
 def get_badge_html(type_groupe):
     tg = str(type_groupe).lower()
     if "temps zéro" in tg or "temps zero" in tg:
-        return f'<span class="badge badge-tempszero">⚡ {type_groupe}</span>'
+        return f'<span class="badge badge-tempszero"> {type_groupe}</span>'
     elif "sécurité" in tg or "securite" in tg:
-        return f'<span class="badge badge-securite">🛡️ {type_groupe}</span>'
+        return f'<span class="badge badge-securite"> {type_groupe}</span>'
     elif "secours" in tg:
-        return f'<span class="badge badge-secours">🔋 {type_groupe}</span>'
-    return f'<span class="badge badge-aucun">ℹ️ {type_groupe}</span>'
+        return f'<span class="badge badge-secours"> {type_groupe}</span>'
+    return f'<span class="badge badge-aucun">ℹ {type_groupe}</span>'
 
 def get_result_box_class(type_groupe):
     tg = str(type_groupe).lower()
