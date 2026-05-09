@@ -32,54 +32,704 @@ if "choix_inverseur_resultat" not in st.session_state:
     st.session_state.choix_inverseur_resultat = None
 
 # =========================================================
-# CSS (identique)
+# CSS - Professional Industrial Design (Cegelec-inspired)
 # =========================================================
 st.markdown("""
 <style>
-    .stApp { background: linear-gradient(135deg, #f4f7fb 0%, #eaf1fb 100%); }
-    .top-hero { background: linear-gradient(135deg, #ffffff 0%, #f7fbff 100%); border: 1px solid #dbe7f3; border-radius: 22px; padding: 26px 28px; margin-bottom: 22px; box-shadow: 0 6px 18px rgba(0,0,0,0.05); }
-    .brand-wrap { display: flex; align-items: center; gap: 16px; margin-bottom: 12px; }
-    .brand-logo { width: 68px; height: 68px; border-radius: 18px; background: linear-gradient(135deg, #123d6a 0%, #1f6fb2 100%); display: flex; align-items: center; justify-content: center; color: white; font-size: 30px; font-weight: 800; box-shadow: 0 8px 20px rgba(18,61,106,0.22); }
-    .brand-name { font-size: 15px; font-weight: 800; color: #1a4f85; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 3px; }
-    .main-title { font-size: 36px; font-weight: 900; color: #0f2747; margin-bottom: 0.4rem; line-height: 1.2; }
-    .subtitle { font-size: 16px; color: #4b6280; margin-bottom: 0; line-height: 1.7; }
-    .section-title { font-size: 28px; font-weight: 800; color: #10345c; margin-top: 10px; margin-bottom: 14px; }
-    .info-box { background: linear-gradient(135deg, #eef4fb 0%, #f8fbff 100%); padding: 20px; border-radius: 16px; border: 1px solid #d4e1f2; margin-bottom: 20px; box-shadow: 0 4px 14px rgba(0,0,0,0.04); }
-    .card { background: white; padding: 20px; border-radius: 16px; border: 1px solid #e4ebf5; box-shadow: 0 4px 14px rgba(0,0,0,0.06); margin-bottom: 18px; }
-    .metric-card { background: white; border-radius: 16px; padding: 18px; text-align: center; border: 1px solid #e4ebf5; box-shadow: 0 4px 14px rgba(0,0,0,0.05); }
-    .metric-label { font-size: 13px; color: #6b7b93; font-weight: 600; margin-bottom: 8px; text-transform: uppercase; }
-    .metric-value { font-size: 26px; font-weight: 800; color: #0f2747; }
-    .metric-sub { font-size: 13px; color: #70839c; margin-top: 4px; }
-    .badge { display: inline-block; padding: 8px 14px; border-radius: 999px; font-weight: 700; font-size: 14px; margin-top: 6px; margin-bottom: 10px; }
-    .badge-securite { background-color: #fff4db; color: #b26a00; border: 1px solid #f2cf75; }
-    .badge-secours { background-color: #eaf4ff; color: #0d63b8; border: 1px solid #8ec2f5; }
-    .badge-tempszero { background-color: #ffe9e9; color: #c62828; border: 1px solid #f2a4a4; }
-    .badge-aucun { background-color: #f3f4f6; color: #4b5563; border: 1px solid #d1d5db; }
-    .result-box-securite { background: linear-gradient(135deg, #fffaf0 0%, #fff4db 100%); border: 1px solid #f2cf75; border-left: 8px solid #e0a100; padding: 22px; border-radius: 18px; margin-top: 10px; }
-    .result-box-secours { background: linear-gradient(135deg, #f4f9ff 0%, #eaf4ff 100%); border: 1px solid #8ec2f5; border-left: 8px solid #0d63b8; padding: 22px; border-radius: 18px; margin-top: 10px; }
-    .result-box-tempszero { background: linear-gradient(135deg, #fff5f5 0%, #ffe9e9 100%); border: 1px solid #f2a4a4; border-left: 8px solid #d32f2f; padding: 22px; border-radius: 18px; margin-top: 10px; }
-    .result-box-aucun { background: linear-gradient(135deg, #f9fafb 0%, #f3f4f6 100%); border: 1px solid #d1d5db; border-left: 8px solid #6b7280; padding: 22px; border-radius: 18px; margin-top: 10px; }
-    .warning-box { background: #fff7e6; border: 1px solid #f4cf7a; border-left: 8px solid #d9a300; padding: 18px; border-radius: 16px; margin-top: 10px; margin-bottom: 16px; }
-    .success-box { background: linear-gradient(135deg, #eef8f1 0%, #f8fffb 100%); border: 2px solid #78c69b; border-left: 10px solid #2e8b57; padding: 24px; border-radius: 18px; margin-top: 20px; margin-bottom: 20px; }
-    .ups-box { background: linear-gradient(135deg, #eef6ff 0%, #f8fbff 100%); border: 2px solid #8ec2f5; border-left: 10px solid #0d63b8; padding: 24px; border-radius: 18px; margin-top: 20px; margin-bottom: 20px; }
-    .confirm-box { background: linear-gradient(135deg, #eef8f1 0%, #f8fffb 100%); border: 2px solid #78c69b; border-left: 10px solid #2e8b57; padding: 24px; border-radius: 18px; margin-top: 20px; margin-bottom: 20px; }
-    .lock-box { background: linear-gradient(135deg, #fff8e8 0%, #fffdf6 100%); border: 2px solid #f1d28b; border-left: 10px solid #d9a300; padding: 24px; border-radius: 18px; margin-top: 20px; margin-bottom: 20px; }
-    .small-note { font-size: 13px; color: #6b7280; margin-top: 8px; }
-    .tse-card { background: white; padding: 22px; border-radius: 18px; border: 1px solid #e4ebf5; box-shadow: 0 4px 14px rgba(0,0,0,0.06); margin-bottom: 18px; }
-    .tse-title { font-size: 24px; font-weight: 800; color: #10345c; margin-bottom: 8px; }
-    .tse-subtitle { color: #5f738c; font-size: 14px; margin-bottom: 14px; }
-    .mini-badge { display: inline-block; padding: 6px 12px; border-radius: 999px; font-size: 12px; font-weight: 700; margin-right: 8px; margin-bottom: 8px; background: #eef4fb; color: #123d6a; border: 1px solid #cfe0f2; }
-    .good-box { background: linear-gradient(135deg, #eef8f1 0%, #f8fffb 100%); border: 1px solid #9bd0b0; border-left: 8px solid #2e8b57; border-radius: 16px; padding: 18px; margin-top: 12px; margin-bottom: 12px; }
-    .warn-box { background: #fff8e8; border: 1px solid #f1d28b; border-left: 8px solid #d9a300; border-radius: 16px; padding: 18px; margin-top: 12px; margin-bottom: 12px; }
-    .danger-box { background: #fff2f2; border: 1px solid #efb1b1; border-left: 8px solid #cf2e2e; border-radius: 16px; padding: 18px; margin-top: 12px; margin-bottom: 12px; }
-    .impossible-box { background: linear-gradient(135deg, #fff0f0 0%, #ffe5e5 100%); border: 2px solid #f5a0a0; border-left: 10px solid #c62828; padding: 24px; border-radius: 18px; margin-top: 10px; margin-bottom: 16px; }
-    .seuil-info-box { background: linear-gradient(135deg, #f0f6ff 0%, #e8f2ff 100%); border: 1px solid #b0ccf0; border-left: 6px solid #1a6fc4; padding: 14px 18px; border-radius: 14px; margin-top: 8px; margin-bottom: 10px; font-size: 13px; color: #1a3a5c; }
-    .schema-box { background: #1e2f3c; color: white; border-radius: 18px; padding: 18px; margin-top: 14px; }
-    .schema-bar { display: flex; height: 34px; border-radius: 14px; overflow: hidden; margin: 10px 0; background: #dbe5ec; }
-    .schema-src1 { background: #2a7f6e; text-align: center; line-height: 34px; font-weight: 700; }
-    .schema-off { background: #e9a23b; text-align: center; line-height: 34px; font-weight: 700; }
-    .schema-src2 { background: #2a7f6e; text-align: center; line-height: 34px; font-weight: 700; }
-    .schema-sync { background: #2c6e9e; text-align: center; line-height: 34px; font-weight: 700; }
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+    
+    /* ===== BASE & TYPOGRAPHY ===== */
+    .stApp { 
+        background: #F8FAFC; 
+        font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    }
+    
+    h1, h2, h3, h4, h5, h6, p, span, div, label {
+        font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif !important;
+    }
+    
+    /* ===== HEADER ===== */
+    .top-header {
+        background: #FFFFFF;
+        border: 1px solid #E2E8F0;
+        border-radius: 8px;
+        padding: 20px 24px;
+        margin-bottom: 24px;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+    }
+    
+    .header-content {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+    }
+    
+    .header-icon {
+        width: 44px;
+        height: 44px;
+        border-radius: 8px;
+        background: #1E293B;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+    }
+    
+    .header-icon svg {
+        width: 24px;
+        height: 24px;
+        color: #FFFFFF;
+    }
+    
+    .header-text {
+        flex: 1;
+    }
+    
+    .app-name {
+        font-size: 11px;
+        font-weight: 600;
+        color: #64748B;
+        letter-spacing: 0.5px;
+        text-transform: uppercase;
+        margin-bottom: 4px;
+    }
+    
+    .app-title {
+        font-size: 18px;
+        font-weight: 600;
+        color: #0F172A;
+        line-height: 1.3;
+        margin: 0;
+    }
+    
+    .app-description {
+        font-size: 13px;
+        color: #64748B;
+        line-height: 1.5;
+        margin-top: 12px;
+        padding-top: 12px;
+        border-top: 1px solid #E2E8F0;
+    }
+    
+    /* ===== WORKFLOW STEPS ===== */
+    .workflow-step {
+        background: #FFFFFF;
+        border: 1px solid #E2E8F0;
+        border-radius: 8px;
+        padding: 20px;
+        margin-bottom: 16px;
+    }
+    
+    .workflow-step.active {
+        border-color: #E81D21;
+        border-left: 3px solid #E81D21;
+    }
+    
+    .workflow-step.completed {
+        border-color: #16A34A;
+        background: #F0FDF4;
+    }
+    
+    .workflow-step.locked {
+        opacity: 0.6;
+        background: #F8FAFC;
+    }
+    
+    .step-header {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin-bottom: 16px;
+    }
+    
+    .step-number {
+        width: 28px;
+        height: 28px;
+        border-radius: 6px;
+        background: #F1F5F9;
+        color: #475569;
+        font-size: 13px;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    .step-number.active {
+        background: #E81D21;
+        color: #FFFFFF;
+    }
+    
+    .step-number.completed {
+        background: #16A34A;
+        color: #FFFFFF;
+    }
+    
+    .step-title {
+        font-size: 15px;
+        font-weight: 600;
+        color: #0F172A;
+        margin: 0;
+    }
+    
+    /* ===== SECTION TITLE ===== */
+    .section-title {
+        font-size: 16px;
+        font-weight: 600;
+        color: #0F172A;
+        margin: 24px 0 16px 0;
+        padding-bottom: 8px;
+        border-bottom: 1px solid #E2E8F0;
+    }
+    
+    /* ===== INFO BOX ===== */
+    .info-box {
+        background: #F8FAFC;
+        padding: 16px 20px;
+        border-radius: 6px;
+        border: 1px solid #E2E8F0;
+        margin-bottom: 20px;
+        font-size: 13px;
+        color: #475569;
+        line-height: 1.6;
+    }
+    
+    .info-box b {
+        color: #0F172A;
+    }
+    
+    /* ===== CARDS ===== */
+    .card {
+        background: #FFFFFF;
+        padding: 20px;
+        border-radius: 8px;
+        border: 1px solid #E2E8F0;
+        margin-bottom: 16px;
+    }
+    
+    .card h3 {
+        font-size: 14px;
+        font-weight: 600;
+        color: #0F172A;
+        margin: 0 0 12px 0;
+    }
+    
+    .card p {
+        font-size: 13px;
+        color: #475569;
+        line-height: 1.6;
+        margin: 0;
+    }
+    
+    /* ===== METRIC CARDS ===== */
+    .metric-card {
+        background: #FFFFFF;
+        border-radius: 8px;
+        padding: 16px;
+        text-align: center;
+        border: 1px solid #E2E8F0;
+    }
+    
+    .metric-label {
+        font-size: 11px;
+        color: #64748B;
+        font-weight: 500;
+        margin-bottom: 6px;
+        text-transform: uppercase;
+        letter-spacing: 0.3px;
+    }
+    
+    .metric-value {
+        font-size: 20px;
+        font-weight: 700;
+        color: #0F172A;
+    }
+    
+    .metric-sub {
+        font-size: 11px;
+        color: #94A3B8;
+        margin-top: 4px;
+    }
+    
+    /* ===== BADGES ===== */
+    .badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 6px 12px;
+        border-radius: 4px;
+        font-weight: 600;
+        font-size: 12px;
+        margin-top: 4px;
+        margin-bottom: 8px;
+    }
+    
+    .badge-securite { 
+        background: #FEF3C7; 
+        color: #92400E; 
+        border: 1px solid #FCD34D; 
+    }
+    
+    .badge-secours { 
+        background: #DBEAFE; 
+        color: #1E40AF; 
+        border: 1px solid #93C5FD; 
+    }
+    
+    .badge-tempszero { 
+        background: #FEE2E2; 
+        color: #991B1B; 
+        border: 1px solid #FCA5A5; 
+    }
+    
+    .badge-aucun { 
+        background: #F1F5F9; 
+        color: #475569; 
+        border: 1px solid #CBD5E1; 
+    }
+    
+    /* ===== RESULT BOXES ===== */
+    .result-box-securite {
+        background: #FFFBEB;
+        border: 1px solid #FCD34D;
+        border-left: 4px solid #D97706;
+        padding: 20px;
+        border-radius: 6px;
+        margin-top: 12px;
+    }
+    
+    .result-box-secours {
+        background: #EFF6FF;
+        border: 1px solid #93C5FD;
+        border-left: 4px solid #2563EB;
+        padding: 20px;
+        border-radius: 6px;
+        margin-top: 12px;
+    }
+    
+    .result-box-tempszero {
+        background: #FEF2F2;
+        border: 1px solid #FCA5A5;
+        border-left: 4px solid #DC2626;
+        padding: 20px;
+        border-radius: 6px;
+        margin-top: 12px;
+    }
+    
+    .result-box-aucun {
+        background: #F8FAFC;
+        border: 1px solid #CBD5E1;
+        border-left: 4px solid #64748B;
+        padding: 20px;
+        border-radius: 6px;
+        margin-top: 12px;
+    }
+    
+    .result-box-securite h3,
+    .result-box-secours h3,
+    .result-box-tempszero h3,
+    .result-box-aucun h3 {
+        font-size: 14px;
+        font-weight: 600;
+        color: #0F172A;
+        margin: 0 0 12px 0;
+    }
+    
+    .result-box-securite h4,
+    .result-box-secours h4,
+    .result-box-tempszero h4,
+    .result-box-aucun h4 {
+        font-size: 12px;
+        font-weight: 600;
+        color: #475569;
+        margin: 16px 0 8px 0;
+        text-transform: uppercase;
+        letter-spacing: 0.3px;
+    }
+    
+    .result-box-securite p,
+    .result-box-secours p,
+    .result-box-tempszero p,
+    .result-box-aucun p {
+        font-size: 13px;
+        color: #475569;
+        line-height: 1.6;
+        margin: 0 0 8px 0;
+    }
+    
+    /* ===== STATUS BOXES ===== */
+    .warning-box {
+        background: #FFFBEB;
+        border: 1px solid #FCD34D;
+        border-left: 4px solid #D97706;
+        padding: 16px 20px;
+        border-radius: 6px;
+        margin: 12px 0;
+    }
+    
+    .warning-box h3 {
+        font-size: 14px;
+        font-weight: 600;
+        color: #92400E;
+        margin: 0 0 8px 0;
+    }
+    
+    .warning-box p {
+        font-size: 13px;
+        color: #78350F;
+        margin: 0;
+        line-height: 1.5;
+    }
+    
+    .ups-box {
+        background: #EFF6FF;
+        border: 1px solid #93C5FD;
+        border-left: 4px solid #2563EB;
+        padding: 16px 20px;
+        border-radius: 6px;
+        margin: 16px 0;
+    }
+    
+    .ups-box h3 {
+        font-size: 14px;
+        font-weight: 600;
+        color: #1E40AF;
+        margin: 0 0 8px 0;
+    }
+    
+    .ups-box p {
+        font-size: 13px;
+        color: #1E3A8A;
+        margin: 0;
+        line-height: 1.5;
+    }
+    
+    .confirm-box {
+        background: #F0FDF4;
+        border: 1px solid #86EFAC;
+        border-left: 4px solid #16A34A;
+        padding: 16px 20px;
+        border-radius: 6px;
+        margin: 16px 0;
+    }
+    
+    .confirm-box h3 {
+        font-size: 14px;
+        font-weight: 600;
+        color: #166534;
+        margin: 0 0 8px 0;
+    }
+    
+    .confirm-box p {
+        font-size: 13px;
+        color: #15803D;
+        margin: 0 0 6px 0;
+        line-height: 1.5;
+    }
+    
+    .confirm-box hr {
+        border: none;
+        border-top: 1px solid #BBF7D0;
+        margin: 12px 0;
+    }
+    
+    .confirm-box i {
+        font-style: normal;
+        color: #22863A;
+    }
+    
+    .lock-box {
+        background: #F8FAFC;
+        border: 1px solid #E2E8F0;
+        border-left: 4px solid #94A3B8;
+        padding: 16px 20px;
+        border-radius: 6px;
+        margin: 16px 0;
+    }
+    
+    .lock-box h3 {
+        font-size: 14px;
+        font-weight: 600;
+        color: #475569;
+        margin: 0 0 8px 0;
+    }
+    
+    .lock-box p {
+        font-size: 13px;
+        color: #64748B;
+        margin: 0;
+        line-height: 1.5;
+    }
+    
+    .good-box {
+        background: #F0FDF4;
+        border: 1px solid #86EFAC;
+        border-left: 4px solid #16A34A;
+        border-radius: 6px;
+        padding: 16px 20px;
+        margin: 12px 0;
+    }
+    
+    .good-box h3 {
+        font-size: 14px;
+        font-weight: 600;
+        color: #166534;
+        margin: 0 0 8px 0;
+    }
+    
+    .good-box ul {
+        margin: 0;
+        padding-left: 20px;
+        font-size: 13px;
+        color: #15803D;
+        line-height: 1.6;
+    }
+    
+    .warn-box {
+        background: #FFFBEB;
+        border: 1px solid #FCD34D;
+        border-left: 4px solid #D97706;
+        border-radius: 6px;
+        padding: 16px 20px;
+        margin: 12px 0;
+    }
+    
+    .warn-box h3 {
+        font-size: 14px;
+        font-weight: 600;
+        color: #92400E;
+        margin: 0 0 8px 0;
+    }
+    
+    .warn-box p {
+        font-size: 13px;
+        color: #78350F;
+        margin: 0;
+        line-height: 1.5;
+    }
+    
+    .danger-box {
+        background: #FEF2F2;
+        border: 1px solid #FCA5A5;
+        border-left: 4px solid #DC2626;
+        border-radius: 6px;
+        padding: 16px 20px;
+        margin: 12px 0;
+    }
+    
+    .danger-box h3 {
+        font-size: 14px;
+        font-weight: 600;
+        color: #991B1B;
+        margin: 0 0 8px 0;
+    }
+    
+    .danger-box p {
+        font-size: 13px;
+        color: #7F1D1D;
+        margin: 0;
+        line-height: 1.5;
+    }
+    
+    .impossible-box {
+        background: #FEF2F2;
+        border: 1px solid #FCA5A5;
+        border-left: 4px solid #DC2626;
+        padding: 16px 20px;
+        border-radius: 6px;
+        margin: 12px 0;
+    }
+    
+    .impossible-box h3 {
+        font-size: 14px;
+        font-weight: 600;
+        color: #991B1B;
+        margin: 0 0 8px 0;
+    }
+    
+    .impossible-box p {
+        font-size: 13px;
+        color: #7F1D1D;
+        margin: 0 0 6px 0;
+        line-height: 1.5;
+    }
+    
+    .seuil-info-box {
+        background: #F8FAFC;
+        border: 1px solid #E2E8F0;
+        border-left: 3px solid #3B82F6;
+        padding: 12px 16px;
+        border-radius: 4px;
+        margin: 8px 0 12px 0;
+        font-size: 12px;
+        color: #475569;
+    }
+    
+    .small-note {
+        font-size: 12px;
+        color: #64748B;
+        margin-top: 6px;
+    }
+    
+    /* ===== TSE CARD ===== */
+    .tse-card {
+        background: #FFFFFF;
+        padding: 20px;
+        border-radius: 8px;
+        border: 1px solid #E2E8F0;
+        margin-bottom: 16px;
+    }
+    
+    .tse-title {
+        font-size: 18px;
+        font-weight: 700;
+        color: #0F172A;
+        margin-bottom: 6px;
+    }
+    
+    .tse-subtitle {
+        color: #64748B;
+        font-size: 13px;
+        margin-bottom: 12px;
+        line-height: 1.5;
+    }
+    
+    /* ===== MINI BADGES ===== */
+    .mini-badge {
+        display: inline-flex;
+        align-items: center;
+        padding: 4px 10px;
+        border-radius: 4px;
+        font-size: 11px;
+        font-weight: 600;
+        margin-right: 6px;
+        margin-bottom: 6px;
+        background: #F1F5F9;
+        color: #475569;
+        border: 1px solid #E2E8F0;
+    }
+    
+    /* ===== SCHEMA BOX ===== */
+    .schema-box {
+        background: #1E293B;
+        color: #F8FAFC;
+        border-radius: 8px;
+        padding: 16px 20px;
+        margin-top: 16px;
+    }
+    
+    .schema-box h3 {
+        font-size: 13px;
+        font-weight: 600;
+        color: #E2E8F0;
+        margin: 0 0 12px 0;
+    }
+    
+    .schema-bar {
+        display: flex;
+        height: 32px;
+        border-radius: 4px;
+        overflow: hidden;
+        margin: 8px 0;
+        background: #334155;
+    }
+    
+    .schema-src1 {
+        background: #059669;
+        text-align: center;
+        line-height: 32px;
+        font-weight: 600;
+        font-size: 11px;
+        color: white;
+    }
+    
+    .schema-off {
+        background: #D97706;
+        text-align: center;
+        line-height: 32px;
+        font-weight: 600;
+        font-size: 11px;
+        color: white;
+    }
+    
+    .schema-src2 {
+        background: #059669;
+        text-align: center;
+        line-height: 32px;
+        font-weight: 600;
+        font-size: 11px;
+        color: white;
+    }
+    
+    .schema-sync {
+        background: #2563EB;
+        text-align: center;
+        line-height: 32px;
+        font-weight: 600;
+        font-size: 11px;
+        color: white;
+    }
+    
+    .schema-box > div:last-child {
+        font-size: 12px;
+        color: #94A3B8;
+        margin-top: 8px;
+    }
+    
+    /* ===== STREAMLIT OVERRIDES ===== */
+    .stButton > button {
+        font-family: 'Inter', sans-serif !important;
+        font-weight: 500 !important;
+        border-radius: 6px !important;
+        padding: 8px 16px !important;
+        font-size: 13px !important;
+        transition: all 0.15s ease !important;
+    }
+    
+    .stButton > button[kind="primary"] {
+        background: #E81D21 !important;
+        border: none !important;
+        color: white !important;
+    }
+    
+    .stButton > button[kind="primary"]:hover {
+        background: #C81A1D !important;
+    }
+    
+    .stRadio > div {
+        gap: 8px !important;
+    }
+    
+    .stSelectbox > div > div {
+        font-family: 'Inter', sans-serif !important;
+    }
+    
+    div[data-testid="stMarkdownContainer"] h2 {
+        font-size: 16px !important;
+        font-weight: 600 !important;
+        color: #0F172A !important;
+        margin: 20px 0 12px 0 !important;
+        padding-bottom: 8px !important;
+        border-bottom: 1px solid #E2E8F0 !important;
+    }
+    
+    div[data-testid="stMarkdownContainer"] h3 {
+        font-size: 14px !important;
+        font-weight: 600 !important;
+        color: #0F172A !important;
+        margin: 16px 0 8px 0 !important;
+    }
+    
+    .stAlert {
+        border-radius: 6px !important;
+        font-size: 13px !important;
+    }
+    
+    hr {
+        border: none !important;
+        border-top: 1px solid #E2E8F0 !important;
+        margin: 24px 0 !important;
+    }
 </style>
 """, unsafe_allow_html=True)
 
@@ -87,19 +737,21 @@ st.markdown("""
 # EN-TETE
 # =========================================================
 st.markdown("""
-<div class="top-hero">
-    <div class="brand-wrap">
-        <div class="brand-logo">⚡</div>
-        <div>
-            <div class="brand-name">PowerSwitch Decision</div>
-            <div class="main-title">Plateforme intelligente de sélection du groupe électrogène et de l'inverseur de source</div>
+<div class="top-header">
+    <div class="header-content">
+        <div class="header-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M14.615 1.595a.75.75 0 01.359.852L12.982 9.75h7.268a.75.75 0 01.548 1.262l-10.5 11.25a.75.75 0 01-1.272-.71l1.992-7.302H3.75a.75.75 0 01-.548-1.262l10.5-11.25a.75.75 0 01.913-.143z"/>
+            </svg>
+        </div>
+        <div class="header-text">
+            <div class="app-name">PowerSwitch Decision</div>
+            <h1 class="app-title">Plateforme intelligente de sélection du groupe électrogène et de l'inverseur de source</h1>
         </div>
     </div>
-    <div class="subtitle">
-        Cette interface d'aide à la décision s'appuie sur une logique issue des normes techniques applicables
-        et du règlement des ERP, afin d'orienter le choix du niveau de groupe électrogène ainsi que la configuration
-        d'inversion de sources la plus cohérente avec les exigences de sécurité, de continuité de service,
-        de criticité des charges et de tenue de l'installation.
+    <div class="app-description">
+        Aide à la décision conforme aux normes techniques et au règlement ERP pour le dimensionnement
+        des systèmes de continuité électrique et la configuration optimale des transferts de sources.
     </div>
 </div>
 """, unsafe_allow_html=True)
@@ -107,7 +759,7 @@ st.markdown("""
 # =========================================================
 # BOUTON DE RÉINITIALISATION
 # =========================================================
-col_reset1, col_reset2 = st.columns([6, 1])
+col_reset1, col_reset2 = st.columns([7, 1])
 with col_reset2:
     if st.button("Réinitialiser", use_container_width=True):
         st.session_state.resultat_final = None
@@ -133,11 +785,39 @@ def generer_pdf(entrees, resultats_groupe, resultats_inverseur):
 
     def clean_html(text):
         if not isinstance(text, str):
-            return str(text)
+            text = str(text)
         text = re.sub(r'<b>|</b>', '', text)
         text = re.sub(r'<br\s*/?>', ' ', text)
         text = re.sub(r'<[^>]+>', '', text)
         text = re.sub(r'\s+', ' ', text)
+        # Replace unicode characters not supported by latin-1
+        replacements = {
+            '\u2264': '<=',  # ≤
+            '\u2265': '>=',  # ≥
+            '\u00b2': '2',   # ²
+            '\u00b3': '3',   # ³
+            '\u2019': "'",   # '
+            '\u2018': "'",   # '
+            '\u201c': '"',   # "
+            '\u201d': '"',   # "
+            '\u2013': '-',   # –
+            '\u2014': '--',  # —
+            '\u2022': '*',   # •
+            '\u00e9': 'e',   # é
+            '\u00e8': 'e',   # è
+            '\u00ea': 'e',   # ê
+            '\u00e0': 'a',   # à
+            '\u00e2': 'a',   # â
+            '\u00f4': 'o',   # ô
+            '\u00fb': 'u',   # û
+            '\u00ee': 'i',   # î
+            '\u00ef': 'i',   # ï
+            '\u00e7': 'c',   # ç
+        }
+        for char, replacement in replacements.items():
+            text = text.replace(char, replacement)
+        # Remove any remaining non-latin1 characters
+        text = text.encode('latin-1', errors='replace').decode('latin-1')
         return text.strip()
 
     pdf.set_font("Arial", "B", 12)
@@ -168,7 +848,7 @@ def generer_pdf(entrees, resultats_groupe, resultats_inverseur):
     with open(tmp_path, "rb") as f:
         data = f.read()
     b64 = base64.b64encode(data).decode()
-    href = f'<a href="data:application/octet-stream;base64,{b64}" download="rapport_{datetime.now().strftime("%Y%m%d_%H%M%S")}.pdf">📄 Télécharger le rapport PDF</a>'
+    href = f'<a href="data:application/octet-stream;base64,{b64}" download="rapport_{datetime.now().strftime("%Y%m%d_%H%M%S")}.pdf" style="display:inline-flex;align-items:center;gap:8px;padding:10px 16px;background:#1E293B;color:white;text-decoration:none;border-radius:6px;font-weight:500;font-size:13px;">Télécharger le rapport PDF</a>'
     return href
 
 # =========================================================
@@ -246,12 +926,12 @@ df_fonctions = pd.DataFrame(FONCTIONS)
 def get_badge_html(type_groupe):
     tg = str(type_groupe).lower()
     if "temps zéro" in tg or "temps zero" in tg:
-        return f'<span class="badge badge-tempszero"> {type_groupe}</span>'
+        return f'<span class="badge badge-tempszero">{type_groupe}</span>'
     elif "sécurité" in tg or "securite" in tg:
-        return f'<span class="badge badge-securite"> {type_groupe}</span>'
+        return f'<span class="badge badge-securite">{type_groupe}</span>'
     elif "secours" in tg:
-        return f'<span class="badge badge-secours"> {type_groupe}</span>'
-    return f'<span class="badge badge-aucun">ℹ {type_groupe}</span>'
+        return f'<span class="badge badge-secours">{type_groupe}</span>'
+    return f'<span class="badge badge-aucun">{type_groupe}</span>'
 
 def get_result_box_class(type_groupe):
     tg = str(type_groupe).lower()
@@ -296,13 +976,15 @@ def afficher_bloc_resultat(titre, type_groupe, details_erp, details_fonctions_sa
     result_class = get_result_box_class(type_groupe)
     explication = expliquer_groupe(type_groupe)
     avantages = avantages_groupe(type_groupe)
+    # Remove emoji from titre
+    titre_clean = titre.replace("⚡ ", "").replace("⚡", "")
     st.markdown(f"""
     <div class="{result_class}">
-        <h3>{titre}</h3>
+        <h3>{titre_clean}</h3>
         {badge_html}
         <p><b>Type de groupe retenu :</b> {type_groupe}</p>
         <p><b>Équipements concernés :</b> {equipements_selon_niveau(type_groupe)}</p>
-        <h4>Pourquoi ?</h4>
+        <h4>Justification</h4>
         <p>{explication}</p>
         <h4>Avantages</h4>
         <p>{avantages}</p>
@@ -323,14 +1005,21 @@ def equipements_selon_niveau(type_groupe):
     return "Aucune exigence explicite globale à ce stade."
 
 def afficher_synthese_finale(groupe_choisi, inverseur_choisi):
+    complements = []
+    if inverseur_choisi['besoin_ups']:
+        complements.append("UPS locale requise")
+    if inverseur_choisi['besoin_sts']:
+        complements.append("STS")
+    complements_text = " + ".join(complements) if complements else "Aucun"
+    
     st.markdown(f"""
     <div class="confirm-box">
-        <h3>📋 Synthèse finale de l'étude</h3>
+        <h3>Synthèse finale de l'étude</h3>
         <p><b>Groupe électrogène retenu :</b> {groupe_choisi}</p>
         <p><b>Inverseur de source retenu :</b> {inverseur_choisi['type_inverseur']}</p>
         <p><b>Classe :</b> {inverseur_choisi['classe']} &nbsp;|&nbsp; <b>Commande :</b> {inverseur_choisi['mode_commande']}</p>
         <p><b>Transition :</b> {inverseur_choisi['transition']} &nbsp;|&nbsp; <b>Bypass :</b> {"Oui" if inverseur_choisi['bypass'] else "Non"}</p>
-        <p><b>Compléments :</b> {'UPS locale requise' if inverseur_choisi['besoin_ups'] else ''}{' + STS' if inverseur_choisi['besoin_sts'] else ''}</p>
+        <p><b>Compléments :</b> {complements_text}</p>
         <hr>
         <p><i>Cette configuration répond aux exigences réglementaires et fonctionnelles identifiées.</i></p>
     </div>
@@ -676,7 +1365,7 @@ st.markdown("""
 mode_choix = st.radio("Mode de choix du groupe électrogène", ["Détermination automatique améliorée", "Choix manuel contrôlé"], horizontal=True)
 
 if mode_choix == "Détermination automatique améliorée":
-    st.markdown("## 1️⃣ Détermination automatique améliorée")
+    st.markdown("## Étape 1 — Détermination automatique améliorée")
     col1, col2 = st.columns(2)
     with col1:
         erp_choice = st.selectbox("Type d'établissement", list(erp_types.keys()))
@@ -687,16 +1376,16 @@ if mode_choix == "Détermination automatique améliorée":
             effectif_total = 0
         else:
             effectif_min = EFFECTIF_MIN_VALABLE.get(code, 1)
-            st.markdown(f'<div class="seuil-info-box">ℹ️ <b>Effectif minimal valable :</b> {effectif_min} personnes</div>', unsafe_allow_html=True)
+            st.markdown(f'<div class="seuil-info-box"><b>Effectif minimal valable :</b> {effectif_min} personnes</div>', unsafe_allow_html=True)
             effectif_total = st.number_input("Effectif total admissible", min_value=0, step=1, value=0)
     effectif_invalide = (code not in TYPES_SPECIAUX) and (effectif_total == 0)
     if effectif_invalide:
-        st.markdown('<div class="impossible-box"><h3>🚫 Effectif invalide — Analyse impossible</h3><p>Un effectif de <b>0</b> ne permet pas de réaliser une analyse réglementaire ERP.</p><p>Veuillez saisir un effectif valable.</p></div>', unsafe_allow_html=True)
+        st.markdown('<div class="impossible-box"><h3>Effectif invalide — Analyse impossible</h3><p>Un effectif de <b>0</b> ne permet pas de réaliser une analyse réglementaire ERP.</p><p>Veuillez saisir un effectif valable.</p></div>', unsafe_allow_html=True)
     else:
         categorie, justification_categorie = determiner_categorie_erp(code, effectif_total)
-        st.markdown("### 2️⃣ Fonctions réellement à alimenter")
+        st.markdown("### Fonctions réellement à alimenter")
         fonctions_selectionnees = st.multiselect("Sélectionnez les fonctions / charges concernées", options=df_fonctions["Fonction"].tolist(), help="Plusieurs fonctions peuvent être retenues.")
-        st.markdown("### 3️⃣ Continuité admissible")
+        st.markdown("### Continuité admissible")
         temps_coupure = st.radio("Temps de coupure maximal admissible pour les charges considérées", [
             "Coupure longue admissible (> 15 s)",
             "Coupure courte admissible (10 s < t ≤ 15 s)",
@@ -726,7 +1415,7 @@ if mode_choix == "Détermination automatique améliorée":
             st.session_state.choix_inverseur_resultat = None
 
 else:  # Mode manuel
-    st.markdown("## 1️⃣ Choix manuel contrôlé")
+    st.markdown("## Étape 1 — Choix manuel contrôlé")
     col1, col2 = st.columns(2)
     with col1:
         erp_choice = st.selectbox("Type d'établissement", list(erp_types.keys()), key="manual_erp")
@@ -737,11 +1426,11 @@ else:  # Mode manuel
             effectif_total = 0
         else:
             effectif_min = EFFECTIF_MIN_VALABLE.get(code, 1)
-            st.markdown(f'<div class="seuil-info-box">ℹ️ <b>Effectif minimal valable :</b> {effectif_min} personnes</div>', unsafe_allow_html=True)
+            st.markdown(f'<div class="seuil-info-box"><b>Effectif minimal valable :</b> {effectif_min} personnes</div>', unsafe_allow_html=True)
             effectif_total = st.number_input("Effectif total admissible", min_value=0, step=1, value=0, key="manual_eff")
     effectif_invalide = (code not in TYPES_SPECIAUX) and (effectif_total == 0)
     if effectif_invalide:
-        st.markdown('<div class="impossible-box"><h3>🚫 Effectif invalide — Analyse impossible</h3><p>Un effectif de <b>0</b> ne permet pas de réaliser une analyse réglementaire ERP.</p><p>Veuillez saisir un effectif valable.</p></div>', unsafe_allow_html=True)
+        st.markdown('<div class="impossible-box"><h3>Effectif invalide — Analyse impossible</h3><p>Un effectif de <b>0</b> ne permet pas de réaliser une analyse réglementaire ERP.</p><p>Veuillez saisir un effectif valable.</p></div>', unsafe_allow_html=True)
     else:
         categorie, justification_categorie = determiner_categorie_erp(code, effectif_total)
         fonctions_selectionnees = []
@@ -756,7 +1445,7 @@ else:  # Mode manuel
         groupe_manuel = st.selectbox("Choisissez directement le niveau de groupe électrogène", ["Aucun", "Secours", "Sécurité", "Temps Zéro"])
         justification_client = st.text_area("Justification / remarque du client", placeholder="Exemple : le client impose un niveau supérieur pour des raisons d'exploitation critique.")
         if groupe_manuel == "Aucun":
-            st.error("⚠️ Vous devez sélectionner un groupe (Secours, Sécurité ou Temps Zéro) pour pouvoir valider.")
+            st.error("Vous devez sélectionner un groupe (Secours, Sécurité ou Temps Zéro) pour pouvoir valider.")
             valider_desactive = True
         else:
             conforme = verifier_choix_manuel(groupe_manuel, niveau_minimal)
@@ -793,7 +1482,7 @@ else:  # Mode manuel
 # =========================================================
 if st.session_state.resultat_final is not None:
     r = st.session_state.resultat_final
-    st.markdown("## ✅ Résultat final")
+    st.markdown("## Résultat — Groupe électrogène")
     c1, c2, c3, c4 = st.columns(4)
     with c1:
         st.markdown(f'<div class="metric-card"><div class="metric-label">Code ERP</div><div class="metric-value">{r["code"]}</div><div class="metric-sub">{r["erp_choice"]}</div></div>', unsafe_allow_html=True)
@@ -807,16 +1496,16 @@ if st.session_state.resultat_final is not None:
     st.markdown(f'<div class="card"><h3>Justification catégorie ERP</h3><p>{r["justification_categorie"]}</p></div>', unsafe_allow_html=True)
 
     if r["mode"] == "Choix manuel contrôlé":
-        afficher_bloc_resultat("⚡ Groupe retenu", r["niveau_final"], r['details']['erp'], r['details']['temps'])
+        afficher_bloc_resultat("Groupe retenu", r["niveau_final"], r['details']['erp'], r['details']['temps'])
     else:
-        afficher_bloc_resultat("⚡ Groupe retenu", r["niveau_final"], r['details']['erp'], r['details']['fonctions'])
+        afficher_bloc_resultat("Groupe retenu", r["niveau_final"], r['details']['erp'], r['details']['fonctions'])
 
     if r["details"].get("remarque_ups"):
-        st.markdown(f'<div class="ups-box"><h3>🔌 Remarque sur les charges critiques</h3><p>{r["details"]["remarque_ups"]}</p></div>', unsafe_allow_html=True)
+        st.markdown(f'<div class="ups-box"><h3>Remarque sur les charges critiques</h3><p>{r["details"]["remarque_ups"]}</p></div>', unsafe_allow_html=True)
 
-    st.markdown("### 🔓 Confirmation de la partie 1")
+    st.markdown("### Confirmation de la partie 1")
     st.info("Cliquez sur le bouton ci-dessous pour confirmer définitivement le groupe retenu et déverrouiller la partie 2.")
-    if st.button("✅ Confirmer le choix du groupe et déverrouiller la partie 2", use_container_width=True):
+    if st.button("Confirmer le choix du groupe et déverrouiller la partie 2", use_container_width=True):
         st.session_state.choix_confirme = True
         st.session_state.groupe_confirme = r["niveau_final"]
         st.session_state.inverseur_confirme = False
@@ -833,7 +1522,7 @@ if st.session_state.resultat_final is not None:
 # =========================================================
 if st.session_state.get("choix_confirme", False) and st.session_state.get("groupe_confirme") is not None:
     st.markdown("---")
-    st.markdown('<div class="section-title">2️⃣ Choix de l\'inverseur de sources</div>', unsafe_allow_html=True)
+    st.markdown('<div class="section-title">Étape 2 — Choix de l\'inverseur de sources</div>', unsafe_allow_html=True)
     groupe_partie_1 = st.session_state.groupe_confirme
     col_a, col_b = st.columns(2)
     with col_a:
@@ -845,7 +1534,7 @@ if st.session_state.get("choix_confirme", False) and st.session_state.get("group
         criticites_inv = st.multiselect("Niveau de criticité (choix multiple possible)", options=["Vie humaine", "Dommages techniques / données", "Pertes financières / exploitation"], default=["Pertes financières / exploitation"], key="criticite_inv", help="Sélectionnez un ou plusieurs niveaux de criticité.")
         if len(criticites_inv) > 1:
             dominant = criticite_dominante(criticites_inv)
-            st.markdown(f'<div class="seuil-info-box">ℹ️ Plusieurs criticités sélectionnées. Niveau dominant retenu : <b>{dominant}</b></div>', unsafe_allow_html=True)
+            st.markdown(f'<div class="seuil-info-box">Plusieurs criticités sélectionnées. Niveau dominant retenu : <b>{dominant}</b></div>', unsafe_allow_html=True)
         inverseur_force = None
         classe_force = None
         if mode_inverseur == "Choix manuel contrôlé":
@@ -870,7 +1559,7 @@ if st.session_state.get("choix_confirme", False) and st.session_state.get("group
 
     if st.session_state.get("choix_inverseur_resultat") is not None:
         inv = st.session_state.choix_inverseur_resultat
-        st.markdown("## ✅ Résultat partie 2")
+        st.markdown("## Résultat — Inverseur de source")
         m1, m2, m3, m4 = st.columns(4)
         with m1:
             st.markdown(f'<div class="metric-card"><div class="metric-label">Type d\'inverseur</div><div class="metric-value">{inv["type_inverseur"]}</div><div class="metric-sub">Recommandation</div></div>', unsafe_allow_html=True)
@@ -882,9 +1571,9 @@ if st.session_state.get("choix_confirme", False) and st.session_state.get("group
             bypass_txt = "Oui" if inv["bypass"] else "Non"
             st.markdown(f'<div class="metric-card"><div class="metric-label">Bypass</div><div class="metric-value">{bypass_txt}</div><div class="metric-sub">Maintenance</div></div>', unsafe_allow_html=True)
         badges_html = render_inverseur_badges(inv)
-        criticites_html = " ".join([f'<span class="mini-badge">⚠️ {c}</span>' for c in inv.get("criticites_selectionnees", [])])
+        criticites_html = " ".join([f'<span class="mini-badge">{c}</span>' for c in inv.get("criticites_selectionnees", [])])
         if len(inv.get("criticites_selectionnees", [])) > 1:
-            criticites_html += f'<br><span class="mini-badge" style="background:#fff4db;color:#b26a00;">Dominant : {inv.get("criticite_dominante","")}</span>'
+            criticites_html += f'<br><span class="mini-badge" style="background:#FEF3C7;color:#92400E;border-color:#FCD34D;">Dominant : {inv.get("criticite_dominante","")}</span>'
         st.markdown(f'<div class="tse-card"><div class="tse-title">{inv["type_inverseur"]}</div><div class="tse-subtitle">{inv["description"]}</div>{badges_html}<div style="margin-top:10px;"><b>Criticité(s) :</b> {criticites_html}</div></div>', unsafe_allow_html=True)
         if inv["notes"]:
             st.markdown('<div class="good-box"><h3>Pourquoi ce choix ?</h3><ul>' + "".join([f"<li>{n}</li>" for n in inv["notes"]]) + "</ul></div>", unsafe_allow_html=True)
@@ -899,9 +1588,9 @@ if st.session_state.get("choix_confirme", False) and st.session_state.get("group
                 texte_archi.append("prévoir une architecture STS pour les charges ultra-sensibles")
             st.markdown(f'<div class="warn-box"><h3>Remarque importante</h3><p><b>Complément recommandé :</b> {" ; ".join(texte_archi)}.</p></div>', unsafe_allow_html=True)
         if inv["alerte_manuel"]:
-            st.markdown(f'<div class="danger-box"><h3>⚠️ Alerte sur le choix manuel</h3><p>{inv["alerte_manuel"]}</p></div>', unsafe_allow_html=True)
+            st.markdown(f'<div class="danger-box"><h3>Alerte sur le choix manuel</h3><p>{inv["alerte_manuel"]}</p></div>', unsafe_allow_html=True)
 
-        if st.button("✅ Confirmer le choix de l'inverseur", use_container_width=True):
+        if st.button("Confirmer le choix de l'inverseur", use_container_width=True):
             st.session_state.inverseur_confirme = True
             st.session_state.inverseur_final = inv
 
@@ -911,7 +1600,7 @@ if st.session_state.get("choix_confirme", False) and st.session_state.get("group
             # Bouton d'export PDF après la synthèse
             col_pdf1, col_pdf2, col_pdf3 = st.columns([1,2,1])
             with col_pdf2:
-                if st.button("📄 Exporter les résultats en PDF", use_container_width=True):
+                if st.button("Exporter les résultats en PDF", use_container_width=True):
                     r = st.session_state.resultat_final
                     inv = st.session_state.inverseur_final
                     entrees = {
