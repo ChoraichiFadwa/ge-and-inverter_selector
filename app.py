@@ -10,9 +10,8 @@ from datetime import datetime
 # CONFIG PAGE
 # =========================================================
 st.set_page_config(
-    page_title="Plateforme intelligente de sélection GE & inverseur de source",
+    page_title="PowerSwitch Decision",
     layout="wide",
-    initial_sidebar_state="expanded"
 )
 
 # =========================================================
@@ -32,823 +31,454 @@ if "choix_inverseur_resultat" not in st.session_state:
     st.session_state.choix_inverseur_resultat = None
 
 # =========================================================
-# CSS - Professional Industrial Design (Cegelec-inspired)
+# CSS — Cegelec / VINCI Energies Design System
 # =========================================================
 st.markdown("""
 <style>
-    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
-    
-    /* ===== BASE & TYPOGRAPHY ===== */
-    .stApp { 
-        background: #F8FAFC; 
-        font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap');
+
+    :root {
+        --blue:       #005BAC;
+        --blue-dark:  #003B70;
+        --blue-light: #EAF3FB;
+        --cyan:       #00A3E0;
+        --white:      #FFFFFF;
+        --bg:         #F4F6F8;
+        --border:     #D9E1E8;
+        --text:       #1F2937;
+        --muted:      #6B7280;
+        --success:    #16A34A;
+        --warning:    #D97706;
+        --danger:     #DC2626;
+        --radius:     6px;
+        --radius-lg:  10px;
     }
-    
-    h1, h2, h3, h4, h5, h6, p, span, div, label {
-        font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif !important;
+
+    html, body, .stApp {
+        background: var(--bg) !important;
+        font-family: 'IBM Plex Sans', -apple-system, sans-serif !important;
+        color: var(--text) !important;
     }
-    
-    /* ===== HEADER ===== */
-    .top-header {
-        background: #FFFFFF;
-        border: 1px solid #E2E8F0;
-        border-radius: 8px;
-        padding: 20px 24px;
-        margin-bottom: 24px;
-        box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+    h1,h2,h3,h4,h5,h6,p,span,div,label,button,input,select,textarea {
+        font-family: 'IBM Plex Sans', -apple-system, sans-serif !important;
     }
-    
-    .header-content {
+
+    /* Hide Streamlit chrome */
+    #MainMenu, footer, header[data-testid="stHeader"] { display: none !important; }
+    .block-container {
+        padding-top: 76px !important;
+        padding-bottom: 56px !important;
+        max-width: 1080px !important;
+    }
+
+    /* ===== STICKY HEADER ===== */
+    .ps-header {
+        position: fixed;
+        top: 0; left: 0; right: 0;
+        z-index: 9999;
+        background: var(--blue);
+        height: 56px;
         display: flex;
         align-items: center;
-        gap: 16px;
+        padding: 0 36px;
+        box-shadow: 0 2px 10px rgba(0,59,112,0.22);
+        border-bottom: 2px solid var(--blue-dark);
+        gap: 14px;
     }
-    
-    .header-icon {
-        width: 44px;
-        height: 44px;
-        border-radius: 8px;
-        background: #1E293B;
-        display: flex;
-        align-items: center;
-        justify-content: center;
+    .ps-header-accent {
+        width: 5px; height: 28px;
+        background: var(--cyan);
+        border-radius: 3px;
         flex-shrink: 0;
     }
-    
-    .header-icon svg {
-        width: 24px;
-        height: 24px;
-        color: #FFFFFF;
-    }
-    
-    .header-text {
-        flex: 1;
-    }
-    
-    .app-name {
-        font-size: 11px;
-        font-weight: 600;
-        color: #64748B;
-        letter-spacing: 0.5px;
-        text-transform: uppercase;
-        margin-bottom: 4px;
-    }
-    
-    .app-title {
-        font-size: 18px;
-        font-weight: 600;
-        color: #0F172A;
-        line-height: 1.3;
-        margin: 0;
-    }
-    
-    .app-description {
-        font-size: 13px;
-        color: #64748B;
-        line-height: 1.5;
-        margin-top: 12px;
-        padding-top: 12px;
-        border-top: 1px solid #E2E8F0;
-    }
-    
-    /* ===== WORKFLOW STEPS ===== */
-    .workflow-step {
-        background: #FFFFFF;
-        border: 1px solid #E2E8F0;
-        border-radius: 8px;
-        padding: 20px;
-        margin-bottom: 16px;
-    }
-    
-    .workflow-step.active {
-        border-color: #E81D21;
-        border-left: 3px solid #E81D21;
-    }
-    
-    .workflow-step.completed {
-        border-color: #16A34A;
-        background: #F0FDF4;
-    }
-    
-    .workflow-step.locked {
-        opacity: 0.6;
-        background: #F8FAFC;
-    }
-    
-    .step-header {
-        display: flex;
-        align-items: center;
-        gap: 12px;
-        margin-bottom: 16px;
-    }
-    
-    .step-number {
-        width: 28px;
-        height: 28px;
-        border-radius: 6px;
-        background: #F1F5F9;
-        color: #475569;
-        font-size: 13px;
-        font-weight: 600;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-    }
-    
-    .step-number.active {
-        background: #E81D21;
-        color: #FFFFFF;
-    }
-    
-    .step-number.completed {
-        background: #16A34A;
-        color: #FFFFFF;
-    }
-    
-    .step-title {
-        font-size: 15px;
-        font-weight: 600;
-        color: #0F172A;
-        margin: 0;
-    }
-    
-    /* ===== SECTION TITLE ===== */
-    .section-title {
-        font-size: 16px;
-        font-weight: 600;
-        color: #0F172A;
-        margin: 24px 0 16px 0;
-        padding-bottom: 8px;
-        border-bottom: 1px solid #E2E8F0;
-    }
-    
-    /* ===== INFO BOX ===== */
-    .info-box {
-        background: #F8FAFC;
-        padding: 16px 20px;
-        border-radius: 6px;
-        border: 1px solid #E2E8F0;
-        margin-bottom: 20px;
-        font-size: 13px;
-        color: #475569;
-        line-height: 1.6;
-    }
-    
-    .info-box b {
-        color: #0F172A;
-    }
-    
-    /* ===== CARDS ===== */
-    .card {
-        background: #FFFFFF;
-        padding: 20px;
-        border-radius: 8px;
-        border: 1px solid #E2E8F0;
-        margin-bottom: 16px;
-    }
-    
-    .card h3 {
+    .ps-header-name {
         font-size: 14px;
-        font-weight: 600;
-        color: #0F172A;
-        margin: 0 0 12px 0;
-    }
-    
-    .card p {
-        font-size: 13px;
-        color: #475569;
-        line-height: 1.6;
-        margin: 0;
-    }
-    
-    /* ===== METRIC CARDS ===== */
-    .metric-card {
-        background: #FFFFFF;
-        border-radius: 8px;
-        padding: 16px;
-        text-align: center;
-        border: 1px solid #E2E8F0;
-    }
-    
-    .metric-label {
-        font-size: 11px;
-        color: #64748B;
-        font-weight: 500;
-        margin-bottom: 6px;
-        text-transform: uppercase;
-        letter-spacing: 0.3px;
-    }
-    
-    .metric-value {
-        font-size: 20px;
         font-weight: 700;
-        color: #0F172A;
-    }
-    
-    .metric-sub {
-        font-size: 11px;
-        color: #94A3B8;
-        margin-top: 4px;
-    }
-    
-    /* ===== BADGES ===== */
-    .badge {
-        display: inline-flex;
-        align-items: center;
-        gap: 6px;
-        padding: 6px 12px;
-        border-radius: 4px;
-        font-weight: 600;
-        font-size: 12px;
-        margin-top: 4px;
-        margin-bottom: 8px;
-    }
-    
-    .badge-securite { 
-        background: #FEF3C7; 
-        color: #92400E; 
-        border: 1px solid #FCD34D; 
-    }
-    
-    .badge-secours { 
-        background: #DBEAFE; 
-        color: #1E40AF; 
-        border: 1px solid #93C5FD; 
-    }
-    
-    .badge-tempszero { 
-        background: #FEE2E2; 
-        color: #991B1B; 
-        border: 1px solid #FCA5A5; 
-    }
-    
-    .badge-aucun { 
-        background: #F1F5F9; 
-        color: #475569; 
-        border: 1px solid #CBD5E1; 
-    }
-    
-    /* ===== RESULT BOXES ===== */
-    .result-box-securite {
-        background: #FFFBEB;
-        border: 1px solid #FCD34D;
-        border-left: 4px solid #D97706;
-        padding: 20px;
-        border-radius: 6px;
-        margin-top: 12px;
-    }
-    
-    .result-box-secours {
-        background: #EFF6FF;
-        border: 1px solid #93C5FD;
-        border-left: 4px solid #2563EB;
-        padding: 20px;
-        border-radius: 6px;
-        margin-top: 12px;
-    }
-    
-    .result-box-tempszero {
-        background: #FEF2F2;
-        border: 1px solid #FCA5A5;
-        border-left: 4px solid #DC2626;
-        padding: 20px;
-        border-radius: 6px;
-        margin-top: 12px;
-    }
-    
-    .result-box-aucun {
-        background: #F8FAFC;
-        border: 1px solid #CBD5E1;
-        border-left: 4px solid #64748B;
-        padding: 20px;
-        border-radius: 6px;
-        margin-top: 12px;
-    }
-    
-    .result-box-securite h3,
-    .result-box-secours h3,
-    .result-box-tempszero h3,
-    .result-box-aucun h3 {
-        font-size: 14px;
-        font-weight: 600;
-        color: #0F172A;
-        margin: 0 0 12px 0;
-    }
-    
-    .result-box-securite h4,
-    .result-box-secours h4,
-    .result-box-tempszero h4,
-    .result-box-aucun h4 {
-        font-size: 12px;
-        font-weight: 600;
-        color: #475569;
-        margin: 16px 0 8px 0;
+        color: #FFFFFF;
+        letter-spacing: 0.08em;
         text-transform: uppercase;
-        letter-spacing: 0.3px;
-    }
-    
-    .result-box-securite p,
-    .result-box-secours p,
-    .result-box-tempszero p,
-    .result-box-aucun p {
-        font-size: 13px;
-        color: #475569;
-        line-height: 1.6;
-        margin: 0 0 8px 0;
-    }
-    
-    /* ===== STATUS BOXES ===== */
-    .warning-box {
-        background: #FFFBEB;
-        border: 1px solid #FCD34D;
-        border-left: 4px solid #D97706;
-        padding: 16px 20px;
-        border-radius: 6px;
-        margin: 12px 0;
-    }
-    
-    .warning-box h3 {
-        font-size: 14px;
-        font-weight: 600;
-        color: #92400E;
-        margin: 0 0 8px 0;
-    }
-    
-    .warning-box p {
-        font-size: 13px;
-        color: #78350F;
         margin: 0;
-        line-height: 1.5;
     }
-    
-    .ups-box {
-        background: #EFF6FF;
-        border: 1px solid #93C5FD;
-        border-left: 4px solid #2563EB;
-        padding: 16px 20px;
-        border-radius: 6px;
-        margin: 16px 0;
+
+    /* ===== INTRO ===== */
+    .ps-intro {
+        background: var(--white);
+        border: 1px solid var(--border);
+        border-top: 3px solid var(--blue);
+        border-radius: var(--radius-lg);
+        padding: 36px 40px 30px;
+        margin-bottom: 24px;
     }
-    
-    .ups-box h3 {
-        font-size: 14px;
-        font-weight: 600;
-        color: #1E40AF;
-        margin: 0 0 8px 0;
+    .ps-intro-title {
+        font-size: 21px;
+        font-weight: 700;
+        color: var(--blue-dark);
+        line-height: 1.4;
+        margin: 0 0 18px 0;
+        max-width: 780px;
     }
-    
-    .ups-box p {
-        font-size: 13px;
-        color: #1E3A8A;
+    .ps-intro-body {
+        font-size: 13.5px;
+        color: var(--muted);
+        line-height: 1.8;
+        max-width: 760px;
+        border-top: 1px solid var(--border);
+        padding-top: 16px;
         margin: 0;
-        line-height: 1.5;
     }
-    
-    .confirm-box {
-        background: #F0FDF4;
-        border: 1px solid #86EFAC;
-        border-left: 4px solid #16A34A;
-        padding: 16px 20px;
-        border-radius: 6px;
-        margin: 16px 0;
+    .ps-intro-body b { color: var(--text); font-weight: 600; }
+
+    /* ===== FORM CONTAINER ===== */
+    .ps-form-wrap {
+        background: var(--white);
+        border: 1px solid var(--border);
+        border-radius: var(--radius-lg);
+        padding: 28px 32px 32px;
+        margin-bottom: 24px;
     }
-    
-    .confirm-box h3 {
-        font-size: 14px;
-        font-weight: 600;
-        color: #166534;
-        margin: 0 0 8px 0;
+    .ps-form-title {
+        font-size: 11px;
+        font-weight: 700;
+        color: var(--blue);
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        margin: 0;
+        padding: 0;
     }
-    
-    .confirm-box p {
-        font-size: 13px;
-        color: #15803D;
-        margin: 0 0 6px 0;
-        line-height: 1.5;
-    }
-    
-    .confirm-box hr {
+    .ps-divider {
         border: none;
-        border-top: 1px solid #BBF7D0;
-        margin: 12px 0;
+        border-top: 1px solid var(--border);
+        margin: 16px 0 22px 0;
     }
-    
-    .confirm-box i {
-        font-style: normal;
-        color: #22863A;
-    }
-    
-    .lock-box {
-        background: #F8FAFC;
-        border: 1px solid #E2E8F0;
-        border-left: 4px solid #94A3B8;
-        padding: 16px 20px;
-        border-radius: 6px;
-        margin: 16px 0;
-    }
-    
-    .lock-box h3 {
-        font-size: 14px;
-        font-weight: 600;
-        color: #475569;
-        margin: 0 0 8px 0;
-    }
-    
-    .lock-box p {
-        font-size: 13px;
-        color: #64748B;
-        margin: 0;
-        line-height: 1.5;
-    }
-    
-    .good-box {
-        background: #F0FDF4;
-        border: 1px solid #86EFAC;
-        border-left: 4px solid #16A34A;
-        border-radius: 6px;
-        padding: 16px 20px;
-        margin: 12px 0;
-    }
-    
-    .good-box h3 {
-        font-size: 14px;
-        font-weight: 600;
-        color: #166534;
-        margin: 0 0 8px 0;
-    }
-    
-    .good-box ul {
-        margin: 0;
-        padding-left: 20px;
-        font-size: 13px;
-        color: #15803D;
-        line-height: 1.6;
-    }
-    
-    .warn-box {
-        background: #FFFBEB;
-        border: 1px solid #FCD34D;
-        border-left: 4px solid #D97706;
-        border-radius: 6px;
-        padding: 16px 20px;
-        margin: 12px 0;
-    }
-    
-    .warn-box h3 {
-        font-size: 14px;
-        font-weight: 600;
-        color: #92400E;
-        margin: 0 0 8px 0;
-    }
-    
-    .warn-box p {
-        font-size: 13px;
-        color: #78350F;
-        margin: 0;
-        line-height: 1.5;
-    }
-    
-    .danger-box {
-        background: #FEF2F2;
-        border: 1px solid #FCA5A5;
-        border-left: 4px solid #DC2626;
-        border-radius: 6px;
-        padding: 16px 20px;
-        margin: 12px 0;
-    }
-    
-    .danger-box h3 {
-        font-size: 14px;
-        font-weight: 600;
-        color: #991B1B;
-        margin: 0 0 8px 0;
-    }
-    
-    .danger-box p {
-        font-size: 13px;
-        color: #7F1D1D;
-        margin: 0;
-        line-height: 1.5;
-    }
-    
-    .impossible-box {
-        background: #FEF2F2;
-        border: 1px solid #FCA5A5;
-        border-left: 4px solid #DC2626;
-        padding: 16px 20px;
-        border-radius: 6px;
-        margin: 12px 0;
-    }
-    
-    .impossible-box h3 {
-        font-size: 14px;
-        font-weight: 600;
-        color: #991B1B;
-        margin: 0 0 8px 0;
-    }
-    
-    .impossible-box p {
-        font-size: 13px;
-        color: #7F1D1D;
-        margin: 0 0 6px 0;
-        line-height: 1.5;
-    }
-    
-    .seuil-info-box {
-        background: #F8FAFC;
-        border: 1px solid #E2E8F0;
-        border-left: 3px solid #3B82F6;
-        padding: 12px 16px;
-        border-radius: 4px;
-        margin: 8px 0 12px 0;
-        font-size: 12px;
-        color: #475569;
-    }
-    
-    .small-note {
-        font-size: 12px;
-        color: #64748B;
-        margin-top: 6px;
-    }
-    
-    /* ===== TSE CARD ===== */
-    .tse-card {
-        background: #FFFFFF;
-        padding: 20px;
-        border-radius: 8px;
-        border: 1px solid #E2E8F0;
-        margin-bottom: 16px;
-    }
-    
-    .tse-title {
-        font-size: 18px;
+
+    /* ===== SECTION LABEL ===== */
+    .ps-label {
+        font-size: 10px;
         font-weight: 700;
-        color: #0F172A;
-        margin-bottom: 6px;
-    }
-    
-    .tse-subtitle {
-        color: #64748B;
-        font-size: 13px;
-        margin-bottom: 12px;
-        line-height: 1.5;
-    }
-    
-    /* ===== MINI BADGES ===== */
-    .mini-badge {
-        display: inline-flex;
-        align-items: center;
-        padding: 4px 10px;
-        border-radius: 4px;
-        font-size: 11px;
-        font-weight: 600;
-        margin-right: 6px;
-        margin-bottom: 6px;
-        background: #F1F5F9;
-        color: #475569;
-        border: 1px solid #E2E8F0;
-    }
-    
-    /* ===== SCHEMA BOX ===== */
-    .schema-box {
-        background: #1E293B;
-        color: #F8FAFC;
-        border-radius: 8px;
-        padding: 16px 20px;
-        margin-top: 16px;
-    }
-    
-    .schema-box h3 {
-        font-size: 13px;
-        font-weight: 600;
-        color: #E2E8F0;
-        margin: 0 0 12px 0;
-    }
-    
-    .schema-bar {
+        color: var(--blue);
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        margin: 22px 0 10px 0;
         display: flex;
-        height: 32px;
-        border-radius: 4px;
-        overflow: hidden;
-        margin: 8px 0;
-        background: #334155;
+        align-items: center;
+        gap: 10px;
     }
-    
-    .schema-src1 {
-        background: #059669;
-        text-align: center;
-        line-height: 32px;
-        font-weight: 600;
+    .ps-label::after {
+        content: '';
+        flex: 1;
+        height: 1px;
+        background: var(--border);
+    }
+
+    /* ===== RESULTS TITLE ===== */
+    .ps-results-title {
         font-size: 11px;
-        color: white;
+        font-weight: 700;
+        color: var(--blue);
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        margin: 30px 0 16px 0;
+        padding-bottom: 10px;
+        border-bottom: 2px solid var(--blue-light);
     }
-    
-    .schema-off {
-        background: #D97706;
-        text-align: center;
-        line-height: 32px;
-        font-weight: 600;
-        font-size: 11px;
-        color: white;
-    }
-    
-    .schema-src2 {
-        background: #059669;
-        text-align: center;
-        line-height: 32px;
-        font-weight: 600;
-        font-size: 11px;
-        color: white;
-    }
-    
-    .schema-sync {
-        background: #2563EB;
-        text-align: center;
-        line-height: 32px;
-        font-weight: 600;
-        font-size: 11px;
-        color: white;
-    }
-    
-    .schema-box > div:last-child {
-        font-size: 12px;
-        color: #94A3B8;
-        margin-top: 8px;
-    }
-    
+
     /* ===== STREAMLIT OVERRIDES ===== */
+    .stRadio label { font-size: 13px !important; }
+    .stSelectbox label, .stMultiSelect label,
+    .stNumberInput label, .stTextArea label {
+        font-size: 11px !important; font-weight: 700 !important;
+        color: var(--muted) !important; text-transform: uppercase !important;
+        letter-spacing: 0.06em !important;
+    }
+    .stSelectbox > div > div,
+    .stMultiSelect > div > div {
+        border: 1px solid var(--border) !important;
+        border-radius: var(--radius) !important;
+        font-size: 13px !important;
+    }
+    .stSelectbox > div > div:focus-within,
+    .stMultiSelect > div > div:focus-within {
+        border-color: var(--blue) !important;
+        box-shadow: 0 0 0 2px rgba(0,91,172,0.12) !important;
+    }
+
+    /* ===== BUTTONS ===== */
     .stButton > button {
-        font-family: 'Inter', sans-serif !important;
-        font-weight: 500 !important;
-        border-radius: 6px !important;
-        padding: 8px 16px !important;
+        font-family: 'IBM Plex Sans', sans-serif !important;
+        font-weight: 600 !important;
         font-size: 13px !important;
+        border-radius: var(--radius) !important;
+        padding: 10px 22px !important;
+        cursor: pointer !important;
         transition: all 0.15s ease !important;
+        letter-spacing: 0.02em !important;
+        background: var(--blue) !important;
+        color: #FFFFFF !important;
+        border: 1px solid var(--blue-dark) !important;
     }
-    
-    .stButton > button[kind="primary"] {
-        background: #E81D21 !important;
-        border: none !important;
-        color: white !important;
+    .stButton > button:hover {
+        background: var(--blue-dark) !important;
+        box-shadow: 0 3px 10px rgba(0,59,112,0.25) !important;
+        transform: translateY(-1px) !important;
     }
-    
-    .stButton > button[kind="primary"]:hover {
-        background: #C81A1D !important;
+    .stButton > button:active {
+        transform: translateY(0) !important;
+        box-shadow: none !important;
     }
-    
-    .stRadio > div {
-        gap: 8px !important;
+
+    /* ===== METRIC CARD ===== */
+    .metric-card {
+        background: var(--white);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        padding: 14px 16px;
     }
-    
-    .stSelectbox > div > div {
-        font-family: 'Inter', sans-serif !important;
+    .metric-card .metric-label {
+        font-size: 10px; font-weight: 700;
+        color: var(--muted); text-transform: uppercase;
+        letter-spacing: 0.07em; margin-bottom: 5px;
     }
-    
-    div[data-testid="stMarkdownContainer"] h2 {
-        font-size: 16px !important;
-        font-weight: 600 !important;
-        color: #0F172A !important;
-        margin: 20px 0 12px 0 !important;
-        padding-bottom: 8px !important;
-        border-bottom: 1px solid #E2E8F0 !important;
+    .metric-card .metric-value {
+        font-size: 18px; font-weight: 700;
+        color: var(--blue-dark);
+        font-family: 'IBM Plex Mono', monospace !important;
     }
-    
-    div[data-testid="stMarkdownContainer"] h3 {
-        font-size: 14px !important;
-        font-weight: 600 !important;
-        color: #0F172A !important;
-        margin: 16px 0 8px 0 !important;
+    .metric-card .metric-sub {
+        font-size: 10px; color: var(--muted); margin-top: 3px;
     }
-    
-    .stAlert {
-        border-radius: 6px !important;
-        font-size: 13px !important;
+
+    /* ===== SEUIL INFO ===== */
+    .seuil-info-box {
+        background: var(--blue-light);
+        border: 1px solid #C2D9EF;
+        border-left: 3px solid var(--blue);
+        padding: 8px 12px;
+        border-radius: var(--radius);
+        margin: 4px 0 10px 0;
+        font-size: 12px; color: var(--blue-dark); font-weight: 500;
     }
-    
-    hr {
-        border: none !important;
-        border-top: 1px solid #E2E8F0 !important;
-        margin: 24px 0 !important;
+
+    /* ===== CARD ===== */
+    .card {
+        background: var(--bg); border: 1px solid var(--border);
+        border-radius: var(--radius); padding: 16px 18px; margin-bottom: 12px;
     }
+    .card h3 {
+        font-size: 11px; font-weight: 700; color: var(--text);
+        margin: 0 0 6px 0; text-transform: uppercase; letter-spacing: 0.05em;
+    }
+    .card p { font-size: 13px; color: var(--muted); line-height: 1.6; margin: 0; }
+
+    /* ===== RESULT BOXES ===== */
+    .result-box-securite  { background:#FFFBEB; border:1px solid #FCD34D; border-left:4px solid #D97706; padding:20px 22px; border-radius:var(--radius); margin-top:12px; }
+    .result-box-secours   { background:var(--blue-light); border:1px solid #C2D9EF; border-left:4px solid var(--blue); padding:20px 22px; border-radius:var(--radius); margin-top:12px; }
+    .result-box-tempszero { background:#FEF2F2; border:1px solid #FCA5A5; border-left:4px solid var(--danger); padding:20px 22px; border-radius:var(--radius); margin-top:12px; }
+    .result-box-aucun     { background:var(--bg); border:1px solid var(--border); border-left:4px solid var(--muted); padding:20px 22px; border-radius:var(--radius); margin-top:12px; }
+    .result-box-securite h3,.result-box-secours h3,.result-box-tempszero h3,.result-box-aucun h3 { font-size:14px; font-weight:700; color:var(--text); margin:0 0 10px 0; }
+    .result-box-securite h4,.result-box-secours h4,.result-box-tempszero h4,.result-box-aucun h4 { font-size:10px; font-weight:700; color:var(--muted); margin:14px 0 5px 0; text-transform:uppercase; letter-spacing:0.07em; }
+    .result-box-securite p,.result-box-secours p,.result-box-tempszero p,.result-box-aucun p { font-size:13px; color:var(--muted); line-height:1.65; margin:0 0 5px 0; }
+
+    /* ===== BADGES ===== */
+    .badge { display:inline-flex; align-items:center; padding:3px 10px; border-radius:4px; font-weight:700; font-size:10px; margin:0 5px 7px 0; letter-spacing:0.05em; text-transform:uppercase; }
+    .badge-securite  { background:#FEF3C7; color:#92400E; border:1px solid #FCD34D; }
+    .badge-secours   { background:var(--blue-light); color:var(--blue-dark); border:1px solid #C2D9EF; }
+    .badge-tempszero { background:#FEE2E2; color:#991B1B; border:1px solid #FCA5A5; }
+    .badge-aucun     { background:var(--bg); color:var(--muted); border:1px solid var(--border); }
+
+    /* ===== MINI BADGES ===== */
+    .mini-badge { display:inline-flex; align-items:center; padding:2px 9px; border-radius:4px; font-size:11px; font-weight:600; margin:2px 3px 3px 0; background:var(--bg); color:var(--muted); border:1px solid var(--border); font-family:'IBM Plex Mono',monospace !important; }
+
+    /* ===== STATUS BOXES ===== */
+    .warning-box  { background:#FFFBEB; border:1px solid #FCD34D; border-left:4px solid #D97706; padding:14px 18px; border-radius:var(--radius); margin:10px 0; }
+    .warning-box h3 { font-size:13px; font-weight:700; color:#92400E; margin:0 0 5px 0; }
+    .warning-box p  { font-size:13px; color:#78350F; margin:0; line-height:1.55; }
+
+    .ups-box  { background:var(--blue-light); border:1px solid #C2D9EF; border-left:4px solid var(--cyan); padding:14px 18px; border-radius:var(--radius); margin:12px 0; }
+    .ups-box h3 { font-size:13px; font-weight:700; color:var(--blue-dark); margin:0 0 5px 0; }
+    .ups-box p  { font-size:13px; color:var(--blue-dark); margin:0; line-height:1.55; }
+
+    .confirm-box { background:#F0FDF4; border:1px solid #86EFAC; border-left:4px solid var(--success); padding:16px 20px; border-radius:var(--radius); margin:12px 0; }
+    .confirm-box h3 { font-size:13px; font-weight:700; color:#166534; margin:0 0 7px 0; }
+    .confirm-box p  { font-size:13px; color:#15803D; margin:0 0 4px 0; line-height:1.55; }
+    .confirm-box hr { border:none; border-top:1px solid #BBF7D0; margin:10px 0; }
+
+    .lock-box { background:var(--bg); border:1px solid var(--border); border-left:4px solid var(--muted); padding:14px 18px; border-radius:var(--radius); margin:12px 0; }
+    .lock-box h3 { font-size:13px; font-weight:700; color:var(--muted); margin:0 0 5px 0; }
+    .lock-box p  { font-size:13px; color:var(--muted); margin:0; line-height:1.55; }
+
+    .good-box { background:#F0FDF4; border:1px solid #86EFAC; border-left:4px solid var(--success); border-radius:var(--radius); padding:14px 18px; margin:10px 0; }
+    .good-box h3 { font-size:13px; font-weight:700; color:#166534; margin:0 0 7px 0; }
+    .good-box ul { margin:0; padding-left:18px; font-size:13px; color:#15803D; line-height:1.65; }
+
+    .warn-box { background:#FFFBEB; border:1px solid #FCD34D; border-left:4px solid #D97706; border-radius:var(--radius); padding:14px 18px; margin:10px 0; }
+    .warn-box h3 { font-size:13px; font-weight:700; color:#92400E; margin:0 0 5px 0; }
+    .warn-box p  { font-size:13px; color:#78350F; margin:0; line-height:1.55; }
+
+    .danger-box { background:#FEF2F2; border:1px solid #FCA5A5; border-left:4px solid var(--danger); border-radius:var(--radius); padding:14px 18px; margin:10px 0; }
+    .danger-box h3 { font-size:13px; font-weight:700; color:#991B1B; margin:0 0 5px 0; }
+    .danger-box p  { font-size:13px; color:#7F1D1D; margin:0; line-height:1.55; }
+
+    .impossible-box { background:#FEF2F2; border:1px solid #FCA5A5; border-left:4px solid var(--danger); padding:14px 18px; border-radius:var(--radius); margin:10px 0; }
+    .impossible-box h3 { font-size:13px; font-weight:700; color:#991B1B; margin:0 0 5px 0; }
+    .impossible-box p  { font-size:13px; color:#7F1D1D; margin:0 0 4px 0; line-height:1.55; }
+
+    .info-box { background:var(--blue-light); border:1px solid #C2D9EF; border-radius:var(--radius); padding:14px 18px; margin:14px 0; font-size:13px; color:var(--blue-dark); line-height:1.65; }
+    .info-box b { color:var(--blue-dark); font-weight:700; }
+
+    /* ===== TSE CARD ===== */
+    .tse-card { background:var(--white); border:1px solid var(--border); border-top:3px solid var(--cyan); border-radius:var(--radius); padding:18px 20px; margin-bottom:12px; }
+    .tse-title { font-size:20px; font-weight:700; color:var(--blue-dark); margin-bottom:3px; font-family:'IBM Plex Mono',monospace !important; }
+    .tse-subtitle { font-size:13px; color:var(--muted); margin-bottom:10px; line-height:1.6; }
+
+    /* ===== SCHEMA ===== */
+    .schema-box { background:var(--blue-dark); color:#F8FAFC; border-radius:var(--radius); padding:16px 18px; margin-top:12px; }
+    .schema-box h3 { font-size:11px; font-weight:700; color:#93C5FD; margin:0 0 10px 0; text-transform:uppercase; letter-spacing:0.07em; }
+    .schema-bar { display:flex; height:28px; border-radius:4px; overflow:hidden; margin:6px 0; }
+    .schema-src1 { background:#059669; text-align:center; line-height:28px; font-weight:700; font-size:11px; color:white; }
+    .schema-off  { background:#D97706; text-align:center; line-height:28px; font-weight:700; font-size:11px; color:white; }
+    .schema-src2 { background:#059669; text-align:center; line-height:28px; font-weight:700; font-size:11px; color:white; }
+    .schema-sync { background:var(--cyan); text-align:center; line-height:28px; font-weight:700; font-size:11px; color:white; }
+    .schema-box > div:last-child { font-size:11px; color:#93C5FD; margin-top:5px; }
+
+    hr { border:none !important; border-top:1px solid var(--border) !important; margin:26px 0 !important; }
+    .stAlert { border-radius:var(--radius) !important; font-size:13px !important; }
+    div[data-testid="stMarkdownContainer"] h2 { font-size:14px !important; font-weight:700 !important; color:var(--blue) !important; margin:24px 0 12px 0 !important; padding-bottom:7px !important; border-bottom:1px solid var(--border) !important; text-transform:uppercase !important; letter-spacing:0.06em !important; }
+    div[data-testid="stMarkdownContainer"] h3 { font-size:13px !important; font-weight:700 !important; color:var(--text) !important; margin:14px 0 7px 0 !important; }
+    .small-note { font-size:11px; color:var(--muted); margin-top:4px; }
 </style>
 """, unsafe_allow_html=True)
 
 # =========================================================
-# EN-TETE
+# STICKY HEADER
 # =========================================================
 st.markdown("""
-<div class="top-header">
-    <div class="header-content">
-        <div class="header-icon">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M14.615 1.595a.75.75 0 01.359.852L12.982 9.75h7.268a.75.75 0 01.548 1.262l-10.5 11.25a.75.75 0 01-1.272-.71l1.992-7.302H3.75a.75.75 0 01-.548-1.262l10.5-11.25a.75.75 0 01.913-.143z"/>
-            </svg>
-        </div>
-        <div class="header-text">
-            <div class="app-name">PowerSwitch Decision</div>
-            <h1 class="app-title">Plateforme intelligente de sélection du groupe électrogène et de l'inverseur de source</h1>
-        </div>
-    </div>
-    <div class="app-description">
-        Aide à la décision conforme aux normes techniques et au règlement ERP pour le dimensionnement
-        des systèmes de continuité électrique et la configuration optimale des transferts de sources.
-    </div>
+<div class="ps-header">
+    <div class="ps-header-accent"></div>
+    <span class="ps-header-name">PowerSwitch Decision</span>
 </div>
 """, unsafe_allow_html=True)
 
 # =========================================================
-# BOUTON DE RÉINITIALISATION
+# INTRODUCTION
 # =========================================================
-col_reset1, col_reset2 = st.columns([7, 1])
-with col_reset2:
-    if st.button("Réinitialiser", use_container_width=True):
-        st.session_state.resultat_final = None
-        st.session_state.choix_confirme = False
-        st.session_state.groupe_confirme = None
-        st.session_state.inverseur_confirme = False
-        st.session_state.inverseur_final = None
-        st.session_state.choix_inverseur_resultat = None
-        st.rerun()
+st.markdown("""
+<div class="ps-intro">
+    <h1 class="ps-intro-title">Plateforme intelligente de sélection du groupe électrogène et de l'inverseur de source</h1>
+    <p class="ps-intro-body">
+        Aide à la décision conforme aux normes techniques et au règlement ERP pour le dimensionnement
+        des systèmes de continuité électrique et la configuration optimale des transferts de sources.<br><br>
+        <b>Objectif :</b> guider le choix du niveau de groupe électrogène puis de l'inverseur de source en tenant
+        compte du type d'établissement, du niveau de continuité attendu, de la criticité des usages
+        et des contraintes de disponibilité de l'installation.<br><br>
+        <b>Références prises en compte :</b> exigences normatives, règlement ERP, continuité de service, sécurité des personnes.
+    </p>
+</div>
+""", unsafe_allow_html=True)
 
 # =========================================================
-# FONCTION PDF
+# FONCTION PDF — 100% Français, sans débordement
 # =========================================================
 def generer_pdf(entrees, resultats_groupe, resultats_inverseur):
     pdf = FPDF()
+    pdf.set_margins(18, 18, 18)
     pdf.add_page()
-    pdf.set_font("Arial", "B", 16)
-    pdf.cell(0, 10, "PowerSwitch Decision - Rapport d'etude", ln=True, align="C")
-    pdf.ln(5)
-    pdf.set_font("Arial", "B", 12)
-    pdf.cell(0, 10, f"Date : {datetime.now().strftime('%d/%m/%Y %H:%M')}", ln=True)
-    pdf.ln(10)
+    eff_w = pdf.w - 36  # effective width
 
-    def clean_html(text):
+    def safe(text):
         if not isinstance(text, str):
             text = str(text)
-        text = re.sub(r'<b>|</b>', '', text)
-        text = re.sub(r'<br\s*/?>', ' ', text)
+        text = re.sub(r'<b>|</b>|<br\s*/?>', ' ', text)
         text = re.sub(r'<[^>]+>', '', text)
         text = re.sub(r'\s+', ' ', text)
-        # Replace unicode characters not supported by latin-1
         replacements = {
-            '\u2264': '<=',  # ≤
-            '\u2265': '>=',  # ≥
-            '\u00b2': '2',   # ²
-            '\u00b3': '3',   # ³
-            '\u2019': "'",   # '
-            '\u2018': "'",   # '
-            '\u201c': '"',   # "
-            '\u201d': '"',   # "
-            '\u2013': '-',   # –
-            '\u2014': '--',  # —
-            '\u2022': '*',   # •
-            '\u00e9': 'e',   # é
-            '\u00e8': 'e',   # è
-            '\u00ea': 'e',   # ê
-            '\u00e0': 'a',   # à
-            '\u00e2': 'a',   # â
-            '\u00f4': 'o',   # ô
-            '\u00fb': 'u',   # û
-            '\u00ee': 'i',   # î
-            '\u00ef': 'i',   # ï
-            '\u00e7': 'c',   # ç
+            '\u2264': '<=', '\u2265': '>=', '\u00b2': '2', '\u00b3': '3',
+            '\u2019': "'", '\u2018': "'", '\u201c': '"', '\u201d': '"',
+            '\u2013': '-', '\u2014': '--', '\u2022': '-',
+            '\u00e9': 'e', '\u00e8': 'e', '\u00ea': 'e', '\u00eb': 'e',
+            '\u00e0': 'a', '\u00e2': 'a', '\u00e4': 'a',
+            '\u00f4': 'o', '\u00f6': 'o', '\u00fb': 'u',
+            '\u00fc': 'u', '\u00f9': 'u', '\u00ee': 'i', '\u00ef': 'i',
+            '\u00e7': 'c', '\u00c9': 'E', '\u00c8': 'E', '\u00ca': 'E',
+            '\u00c0': 'A', '\u00c2': 'A', '\u00d4': 'O', '\u00db': 'U',
+            '\u00ce': 'I', '\u00c7': 'C',
         }
-        for char, replacement in replacements.items():
-            text = text.replace(char, replacement)
-        # Remove any remaining non-latin1 characters
-        text = text.encode('latin-1', errors='replace').decode('latin-1')
-        return text.strip()
+        for ch, rep in replacements.items():
+            text = text.replace(ch, rep)
+        return text.encode('latin-1', errors='replace').decode('latin-1').strip()
 
-    pdf.set_font("Arial", "B", 12)
-    pdf.cell(0, 10, "1. Parametres d'entree", ln=True)
-    pdf.set_font("Arial", "", 11)
+    def section_title(title):
+        pdf.ln(5)
+        pdf.set_fill_color(0, 91, 172)
+        pdf.set_text_color(255, 255, 255)
+        pdf.set_font("Arial", "B", 10)
+        pdf.cell(eff_w, 8, safe(title), ln=True, fill=True)
+        pdf.set_text_color(31, 41, 55)
+        pdf.ln(2)
+
+    def field_row(label, value):
+        pdf.set_font("Arial", "B", 8)
+        pdf.set_text_color(107, 114, 128)
+        pdf.cell(eff_w, 5, safe(label), ln=True)
+        pdf.set_font("Arial", "", 10)
+        pdf.set_text_color(31, 41, 55)
+        pdf.multi_cell(eff_w, 5.5, safe(str(value)), 0, 'L')
+        pdf.ln(2)
+
+    # En-tete
+    pdf.set_fill_color(0, 59, 112)
+    pdf.set_text_color(255, 255, 255)
+    pdf.set_font("Arial", "B", 15)
+    pdf.cell(eff_w, 11, "PowerSwitch Decision", ln=True, fill=True, align="C")
+    pdf.set_font("Arial", "", 9)
+    pdf.cell(eff_w, 7, "Rapport d'etude de dimensionnement electrique", ln=True, fill=True, align="C")
+    pdf.set_text_color(31, 41, 55)
+    pdf.ln(2)
+    pdf.set_font("Arial", "", 8)
+    pdf.set_text_color(107, 114, 128)
+    pdf.cell(eff_w, 5, safe(f"Genere le : {datetime.now().strftime('%d/%m/%Y a %H:%M')}"), ln=True, align="R")
+    pdf.set_text_color(31, 41, 55)
+    pdf.ln(4)
+
+    section_title("1. Parametres d'entree")
     for k, v in entrees.items():
-        pdf.cell(0, 8, f"{k} : {clean_html(v)}", ln=True)
-    pdf.ln(5)
+        field_row(k, v)
 
-    pdf.set_font("Arial", "B", 12)
-    pdf.cell(0, 10, "2. Resultats - Groupe electrogene", ln=True)
-    pdf.set_font("Arial", "", 11)
+    section_title("2. Resultats — Groupe electrogene")
     for k, v in resultats_groupe.items():
-        pdf.cell(0, 8, f"{k} : {clean_html(v)}", ln=True)
-    pdf.ln(5)
+        field_row(k, v)
 
     if resultats_inverseur:
-        pdf.set_font("Arial", "B", 12)
-        pdf.cell(0, 10, "3. Resultats - Inverseur de source", ln=True)
-        pdf.set_font("Arial", "", 11)
+        section_title("3. Resultats — Inverseur de source")
         for k, v in resultats_inverseur.items():
-            pdf.cell(0, 8, f"{k} : {clean_html(v)}", ln=True)
+            field_row(k, v)
+
+    pdf.ln(8)
+    pdf.set_draw_color(217, 225, 232)
+    pdf.line(pdf.l_margin, pdf.get_y(), pdf.w - pdf.r_margin, pdf.get_y())
+    pdf.ln(4)
+    pdf.set_font("Arial", "I", 8)
+    pdf.set_text_color(107, 114, 128)
+    note = (
+        "Ce rapport constitue une aide a la decision fondee sur les normes techniques applicables "
+        "et le reglement des ERP. La validation finale doit rester coherente avec l'etude detaillee "
+        "du projet, les schemas retenus, les charges reellement secourues et les exigences specifiques de l'installation."
+    )
+    pdf.multi_cell(eff_w, 4.5, note, 0, 'L')
 
     with tempfile.NamedTemporaryFile(delete=False, suffix=".pdf") as tmp:
         pdf.output(tmp.name)
         tmp_path = tmp.name
-
     with open(tmp_path, "rb") as f:
         data = f.read()
     b64 = base64.b64encode(data).decode()
-    href = f'<a href="data:application/octet-stream;base64,{b64}" download="rapport_{datetime.now().strftime("%Y%m%d_%H%M%S")}.pdf" style="display:inline-flex;align-items:center;gap:8px;padding:10px 16px;background:#1E293B;color:white;text-decoration:none;border-radius:6px;font-weight:500;font-size:13px;">Télécharger le rapport PDF</a>'
+    fname = f"rapport_powerswitch_{datetime.now().strftime('%Y%m%d_%H%M%S')}.pdf"
+    href = (
+        f'<a href="data:application/octet-stream;base64,{b64}" download="{fname}" '
+        f'style="display:inline-flex;align-items:center;gap:8px;padding:10px 22px;'
+        f'background:#005BAC;color:white;text-decoration:none;border-radius:6px;'
+        f'font-weight:600;font-size:13px;font-family:IBM Plex Sans,sans-serif;">'
+        f'Telecharger le rapport PDF</a>'
+    )
     return href
 
 # =========================================================
@@ -910,10 +540,10 @@ FONCTIONS = [
     {"Famille":"Sécurité des personnes","Fonction":"SSI / alarme incendie / CMSI / sonorisation d'évacuation","Niveau":"Sécurité","Reglementaire":"Oui","Commentaire":"","Critique_TZ_Local":False},
     {"Famille":"Sécurité des personnes","Fonction":"Désenfumage / extraction de fumées","Niveau":"Sécurité","Reglementaire":"Oui","Commentaire":"","Critique_TZ_Local":False},
     {"Famille":"Sécurité des personnes","Fonction":"Pompes incendie / surpresseurs incendie","Niveau":"Sécurité","Reglementaire":"Oui","Commentaire":"","Critique_TZ_Local":False},
-    {"Famille":"Charges médicales / vitales","Fonction":"Bloc opératoire / réanimation / respirateurs / monitoring vital","Niveau":"Temps Zéro","Reglementaire":"Oui / très critique","Commentaire":"Charge critique nécessitant une continuité sans coupure. Pour un hôpital, cela implique une UPS locale en complément du GE de sécurité.","Critique_TZ_Local":True},
+    {"Famille":"Charges médicales / vitales","Fonction":"Bloc opératoire / réanimation / respirateurs / monitoring vital","Niveau":"Temps Zéro","Reglementaire":"Oui / très critique","Commentaire":"Charge critique nécessitant une continuité sans coupure.","Critique_TZ_Local":True},
     {"Famille":"Charges critiques exploitation","Fonction":"Serveurs critiques / contrôle-commande / supervision centrale","Niveau":"Temps Zéro","Reglementaire":"Selon usage","Commentaire":"Continuité sans interruption parfois nécessaire ; UPS locale recommandée hors MIL / AER.","Critique_TZ_Local":True},
     {"Famille":"Charges critiques exploitation","Fonction":"Tour de contrôle / balisage / fonctions aéroportuaires critiques","Niveau":"Temps Zéro","Reglementaire":"Oui selon fonction","Commentaire":"Très forte criticité fonctionnelle.","Critique_TZ_Local":True},
-    {"Famille":"Exploitation","Fonction":"Froid / chambres froides / conservation","Niveau":"Secours","Reglementaire":"Non en général","Commentaire":"Continuité d'exploitation, mais pas forcément sécurité des personnes.","Critique_TZ_Local":False},
+    {"Famille":"Exploitation","Fonction":"Froid / chambres froides / conservation","Niveau":"Secours","Reglementaire":"Non en général","Commentaire":"Continuité d'exploitation.","Critique_TZ_Local":False},
     {"Famille":"Exploitation","Fonction":"Ventilation utile / climatisation utile / process","Niveau":"Secours","Reglementaire":"Non en général","Commentaire":"Important pour exploitation ou confort technique.","Critique_TZ_Local":False},
     {"Famille":"Exploitation","Fonction":"Encaissement / informatique non vitale / exploitation bureautique","Niveau":"Secours","Reglementaire":"Non","Commentaire":"Continuité souhaitée sans être une fonction de sécurité.","Critique_TZ_Local":False},
     {"Famille":"Exploitation","Fonction":"Vidéosurveillance / sûreté / anti-intrusion","Niveau":"Secours","Reglementaire":"Selon site","Commentaire":"Peut être important sans relever systématiquement de la sécurité incendie.","Critique_TZ_Local":False},
@@ -921,7 +551,7 @@ FONCTIONS = [
 df_fonctions = pd.DataFrame(FONCTIONS)
 
 # =========================================================
-# FONCTIONS D'AFFICHAGE ET DE LOGIQUE
+# HELPERS
 # =========================================================
 def get_badge_html(type_groupe):
     tg = str(type_groupe).lower()
@@ -976,7 +606,6 @@ def afficher_bloc_resultat(titre, type_groupe, details_erp, details_fonctions_sa
     result_class = get_result_box_class(type_groupe)
     explication = expliquer_groupe(type_groupe)
     avantages = avantages_groupe(type_groupe)
-    # Remove emoji from titre
     titre_clean = titre.replace("⚡ ", "").replace("⚡", "")
     st.markdown(f"""
     <div class="{result_class}">
@@ -1011,7 +640,6 @@ def afficher_synthese_finale(groupe_choisi, inverseur_choisi):
     if inverseur_choisi['besoin_sts']:
         complements.append("STS")
     complements_text = " + ".join(complements) if complements else "Aucun"
-    
     st.markdown(f"""
     <div class="confirm-box">
         <h3>Synthèse finale de l'étude</h3>
@@ -1021,12 +649,12 @@ def afficher_synthese_finale(groupe_choisi, inverseur_choisi):
         <p><b>Transition :</b> {inverseur_choisi['transition']} &nbsp;|&nbsp; <b>Bypass :</b> {"Oui" if inverseur_choisi['bypass'] else "Non"}</p>
         <p><b>Compléments :</b> {complements_text}</p>
         <hr>
-        <p><i>Cette configuration répond aux exigences réglementaires et fonctionnelles identifiées.</i></p>
+        <p>Cette configuration répond aux exigences réglementaires et fonctionnelles identifiées.</p>
     </div>
     """, unsafe_allow_html=True)
 
 # =========================================================
-# REGLES METIER (retour à un seul type ERP)
+# LOGIQUE METIER
 # =========================================================
 def determiner_categorie_erp(code, effectif_total):
     if code in TYPES_SPECIAUX:
@@ -1039,7 +667,7 @@ def determiner_categorie_erp(code, effectif_total):
     elif effectif_total > 300:
         return 3, "Effectif total entre 301 et 700."
     elif effectif_total >= seuil:
-        return 4, f"Effectif total ({effectif_total}) ≥ seuil 5e catégorie ({seuil})."
+        return 4, f"Effectif total ({effectif_total}) >= seuil 5e catégorie ({seuil})."
     return 5, f"Effectif total ({effectif_total}) < seuil 5e catégorie ({seuil})."
 
 def niveau_min_erp(code):
@@ -1072,7 +700,6 @@ def niveau_fonctions_selectionnees(fonctions_selectionnees, code):
                 justifs.append(f"• {fonction} → {niveau}")
             if score > max_score:
                 max_score = score
-    # Ne pas ajouter la liste des fonctions
     return SCORE_NIVEAU[max_score], "<br>".join(justifs), ups_local_necessaire, []
 
 def ajuster_par_temps_coupure(niveau_actuel, temps_coupure, code):
@@ -1087,13 +714,13 @@ def ajuster_par_temps_coupure(niveau_actuel, temps_coupure, code):
             score = max(score, NIVEAU_SCORE["Sécurité"])
             justification = "Aucune coupure admissible (0 s) : le niveau global retenu est Sécurité, avec UPS / ASI séparée pour les charges non interruptibles."
             ups_local_temps = True
-    elif temps_coupure == "Coupure très courte admissible (0 s < t ≤ 10 s)":
+    elif "0 s < t" in temps_coupure and "10 s" in temps_coupure:
         score = max(score, NIVEAU_SCORE["Sécurité"])
-        justification = "Une coupure très courte (≤ 10 s) impose au minimum un niveau Sécurité."
-    elif temps_coupure == "Coupure courte admissible (10 s < t ≤ 15 s)":
+        justification = "Une coupure très courte (0 s < t <= 10 s) impose au minimum un niveau Sécurité."
+    elif "10 s < t" in temps_coupure and "15 s" in temps_coupure:
         score = max(score, NIVEAU_SCORE["Secours"])
-        justification = "Une coupure courte (≤ 15 s) impose au minimum un niveau Secours."
-    else:  # coupure longue > 15 s
+        justification = "Une coupure courte (10 s < t <= 15 s) impose au minimum un niveau Secours."
+    else:
         justification = "Une coupure longue (> 15 s) n'impose pas de niveau minimal particulier."
     return SCORE_NIVEAU[score], justification, ups_local_temps
 
@@ -1108,14 +735,14 @@ def niveau_final_automatique(code, fonctions_selectionnees, temps_coupure):
     ups_local_requis = ups_local_fct or ups_local_temps
     remarque_ups = ""
     if ups_local_requis:
-        remarque_ups = """
-        <b>Remarque importante :</b><br>
-        Pour cet établissement, le <b>niveau global retenu reste Sécurité</b>.<br>
-        La présence de charges critiques ou d'un besoin sans coupure ne conduit pas à classer tout le site en <b>Temps Zéro</b>.<br><br>
-        <b>Solution recommandée :</b><br>
-        • prévoir un <b>groupe électrogène de Sécurité</b> pour l'installation générale,<br>
-        • ajouter des <b>UPS locales</b> au niveau des charges critiques ou non interruptibles.
-        """
+        remarque_ups = (
+            "<b>Remarque importante :</b><br>"
+            "Pour cet établissement, le <b>niveau global retenu reste Sécurité</b>.<br>"
+            "La présence de charges critiques ou d'un besoin sans coupure ne conduit pas à classer tout le site en <b>Temps Zéro</b>.<br><br>"
+            "<b>Solution recommandée :</b><br>"
+            "• prévoir un <b>groupe électrogène de Sécurité</b> pour l'installation générale,<br>"
+            "• ajouter des <b>UPS locales</b> au niveau des charges critiques ou non interruptibles."
+        )
     justification_globale = {
         "erp": f"Niveau minimal indicatif lié au type ERP : <b>{niveau_erp}</b><br>{justif_erp}",
         "fonctions": f"Niveau issu des fonctions sélectionnées : <b>{niveau_fct}</b><br>{justif_fct}",
@@ -1127,27 +754,23 @@ def niveau_final_automatique(code, fonctions_selectionnees, temps_coupure):
 def niveau_minimal_mode_manuel(code, temps_coupure):
     niveau_erp, justif_erp = niveau_min_erp(code)
     remarque_ups = ""
-    if temps_coupure == "Coupure longue admissible (> 15 s)":
+    if "> 15 s" in temps_coupure:
         niveau_recommande = "Aucun"
         justif_temps = "Une coupure longue admissible (> 15 s) n'impose pas de niveau minimal particulier."
-    elif temps_coupure == "Coupure courte admissible (10 s < t ≤ 15 s)":
+    elif "10 s < t" in temps_coupure and "15 s" in temps_coupure:
         niveau_recommande = "Secours"
-        justif_temps = "Une coupure courte admissible (≤ 15 s) conduit à recommander un groupe de Secours."
-    elif temps_coupure == "Coupure très courte admissible (0 s < t ≤ 10 s)":
+        justif_temps = "Une coupure courte admissible (10 s < t <= 15 s) conduit à recommander un groupe de Secours."
+    elif "0 s < t" in temps_coupure and "10 s" in temps_coupure:
         niveau_recommande = "Sécurité"
-        justif_temps = "Une coupure très courte admissible (≤ 10 s) conduit à recommander un groupe de Sécurité."
-    elif temps_coupure == "Aucune coupure admissible (0 s)":
+        justif_temps = "Une coupure très courte admissible (0 s < t <= 10 s) conduit à recommander un groupe de Sécurité."
+    elif "0 s" in temps_coupure:
         if code in TYPES_TEMPS_ZERO_GLOBAL:
             niveau_recommande = "Temps Zéro"
             justif_temps = "Aucune coupure admissible (0 s) : pour ce type d'établissement, la recommandation est Temps Zéro."
         else:
             niveau_recommande = "Sécurité"
             justif_temps = "Aucune coupure admissible (0 s) : la recommandation est Sécurité avec UPS / ASI séparée pour les charges non interruptibles."
-            remarque_ups = """
-            <b>Remarque importante :</b><br>
-            Le niveau global retenu reste <b>Sécurité</b>.<br>
-            Les charges sans coupure doivent être traitées par <b>UPS / ASI séparée</b>.
-            """
+            remarque_ups = "<b>Remarque :</b> le niveau global retenu reste <b>Sécurité</b>. Les charges sans coupure doivent être traitées par <b>UPS / ASI séparée</b>."
     else:
         niveau_recommande = "Aucun"
         justif_temps = "Aucun critère de temps reconnu."
@@ -1163,22 +786,25 @@ def verifier_choix_manuel(niveau_manuel, niveau_minimal):
     return NIVEAU_SCORE[niveau_manuel] >= NIVEAU_SCORE[niveau_minimal]
 
 # =========================================================
-# RECOMMANDATION INVERSEUR (identique)
+# INVERSEUR
 # =========================================================
 CRITICITE_SCORE = {"Vie humaine":3, "Dommages techniques / données":2, "Pertes financières / exploitation":1}
+
 def criticite_dominante(criticites_selectionnees):
     if not criticites_selectionnees:
         return "Pertes financières / exploitation"
     max_score = 0
     dominante = "Pertes financières / exploitation"
     for c in criticites_selectionnees:
-        score = CRITICITE_SCORE.get(c,0)
+        score = CRITICITE_SCORE.get(c, 0)
         if score > max_score:
             max_score = score
             dominante = c
     return dominante
 
-def recommander_inverseur(groupe_ge, coupure, transition, maintenance_sans_coupure, criticites_selectionnees, mode_choix_inv, inverseur_force=None, classe_force=None):
+def recommander_inverseur(groupe_ge, coupure, transition, maintenance_sans_coupure,
+                           criticites_selectionnees, mode_choix_inv,
+                           inverseur_force=None, classe_force=None):
     notes = []
     architecture = []
     besoin_ups = False
@@ -1188,75 +814,52 @@ def recommander_inverseur(groupe_ge, coupure, transition, maintenance_sans_coupu
         notes.append(f"Plusieurs niveaux de criticité sélectionnés : {', '.join(criticites_selectionnees)}. Niveau dominant retenu : <b>{criticite}</b>.")
 
     if groupe_ge == "Temps Zéro":
-        type_recommande = "ATSE"
-        commande = "Automatique"
-        classe = "PC"
+        type_recommande = "ATSE"; commande = "Automatique"; classe = "PC"
         notes.append("Le niveau global confirmé est Temps Zéro : l'architecture doit viser une très haute continuité.")
-        architecture.append("ATSE prioritaire")
-        architecture.append("Bypass fortement recommandé")
+        architecture.append("ATSE prioritaire"); architecture.append("Bypass fortement recommandé")
         besoin_ups = True
     elif groupe_ge == "Sécurité":
-        type_recommande = "ATSE"
-        commande = "Automatique"
-        classe = "CB"
+        type_recommande = "ATSE"; commande = "Automatique"; classe = "CB"
         notes.append("Le niveau global confirmé est Sécurité : le basculement automatique est à privilégier.")
         architecture.append("ATSE recommandé")
     elif groupe_ge == "Secours":
-        type_recommande = "RTSE"
-        commande = "Télécommandée / automatique selon besoin"
-        classe = "CB"
+        type_recommande = "RTSE"; commande = "Télécommandée / automatique selon besoin"; classe = "CB"
         notes.append("Le niveau global confirmé est Secours : la continuité d'exploitation est recherchée sans exigence maximale systématique.")
         architecture.append("RTSE ou ATSE selon criticité")
     else:
-        type_recommande = "MTSE"
-        commande = "Manuelle"
-        classe = "CC"
+        type_recommande = "MTSE"; commande = "Manuelle"; classe = "CC"
         notes.append("Aucune exigence forte globale n'est retenue à ce stade.")
         architecture.append("MTSE possible")
 
     if coupure == "< 50 ms":
-        besoin_ups = True
-        besoin_sts = True
-        type_recommande = "ATSE"
-        commande = "Automatique"
-        classe = "PC"
-        notes.append("Une coupure < 50 ms ne peut pas être garantie par un inverseur mécanique seul. Une architecture complémentaire de type UPS / STS est nécessaire.")
+        besoin_ups = True; besoin_sts = True
+        type_recommande = "ATSE"; commande = "Automatique"; classe = "PC"
+        notes.append("Une coupure < 50 ms ne peut pas être garantie par un inverseur mécanique seul. Une architecture complémentaire UPS / STS est nécessaire.")
     elif coupure == "50 ms à 2 s":
         if groupe_ge in ["Sécurité","Temps Zéro"]:
-            type_recommande = "ATSE"
-            commande = "Automatique"
+            type_recommande = "ATSE"; commande = "Automatique"
         elif groupe_ge == "Secours":
             type_recommande = "ATSE" if criticite in ["Vie humaine","Dommages techniques / données"] else "RTSE"
         else:
             type_recommande = "RTSE"
     else:
         if groupe_ge == "Temps Zéro":
-            besoin_ups = True
-            type_recommande = "ATSE"
-            commande = "Automatique"
-            notes.append("Même si l'utilisateur saisit > 2 s, le niveau Temps Zéro implique une architecture plus exigeante.")
+            besoin_ups = True; type_recommande = "ATSE"; commande = "Automatique"
+            notes.append("Même si la valeur saisie est > 2 s, le niveau Temps Zéro implique une architecture plus exigeante.")
         elif groupe_ge == "Sécurité":
-            type_recommande = "ATSE"
-            commande = "Automatique"
+            type_recommande = "ATSE"; commande = "Automatique"
         elif groupe_ge == "Secours":
-            type_recommande = "RTSE"
-            commande = "Télécommandée"
+            type_recommande = "RTSE"; commande = "Télécommandée"
         else:
-            type_recommande = "MTSE"
-            commande = "Manuelle"
+            type_recommande = "MTSE"; commande = "Manuelle"
 
     transition_reelle = transition
     if transition == "Fermée (sans coupure)":
-        type_recommande = "ATSE"
-        commande = "Automatique"
-        classe = "PC"
-        notes.append("La transition fermée nécessite une synchronisation des sources. Elle doit être réservée à des sources compatibles et à des appareillages adaptés.")
+        type_recommande = "ATSE"; commande = "Automatique"; classe = "PC"
+        notes.append("La transition fermée nécessite une synchronisation des sources. Réservée à des sources compatibles et des appareillages adaptés.")
     elif transition == "Statique":
-        type_recommande = "ATSE"
-        commande = "Automatique"
-        classe = "PC"
-        besoin_sts = True
-        besoin_ups = True
+        type_recommande = "ATSE"; commande = "Automatique"; classe = "PC"
+        besoin_sts = True; besoin_ups = True
         notes.append("Le transfert statique relève d'une architecture STS / UPS, pas d'un simple inverseur mécanique.")
     elif transition == "Retardée (I-O-II)":
         notes.append("La transition retardée correspond au cas le plus courant en groupe électrogène.")
@@ -1267,21 +870,18 @@ def recommander_inverseur(groupe_ge, coupure, transition, maintenance_sans_coupu
     if maintenance_sans_coupure == "Oui":
         bypass = True
         if type_recommande != "ATSE":
-            type_recommande = "ATSE"
-            commande = "Automatique"
+            type_recommande = "ATSE"; commande = "Automatique"
             notes.append("Le besoin de maintenance sans coupure pousse vers un ATSE avec bypass.")
         architecture.append("Bypass de maintenance recommandé")
 
     if criticite == "Vie humaine":
-        type_recommande = "ATSE"
-        commande = "Automatique"
+        type_recommande = "ATSE"; commande = "Automatique"
         if transition in ["Fermée (sans coupure)","Statique"] or coupure == "< 50 ms":
             classe = "PC"
         notes.append("La criticité humaine impose une architecture de haute disponibilité.")
     elif criticite == "Dommages techniques / données":
         if coupure == "< 50 ms":
-            besoin_ups = True
-            besoin_sts = True
+            besoin_ups = True; besoin_sts = True
         if type_recommande == "MTSE":
             type_recommande = "RTSE"
 
@@ -1296,8 +896,7 @@ def recommander_inverseur(groupe_ge, coupure, transition, maintenance_sans_coupu
 
     alerte_manuel = ""
     if mode_choix_inv == "Choix manuel contrôlé" and inverseur_force and classe_force:
-        type_recommande = inverseur_force
-        classe = classe_force
+        type_recommande = inverseur_force; classe = classe_force
         incoherences = []
         if coupure == "< 50 ms" and inverseur_force in ["MTSE","RTSE"]:
             incoherences.append("Un MTSE ou RTSE seul ne convient pas pour une exigence < 50 ms.")
@@ -1333,39 +932,41 @@ def recommander_inverseur(groupe_ge, coupure, transition, maintenance_sans_coupu
         schema_html = '<div class="schema-bar"><div class="schema-src1" style="width:48%">Source I</div><div class="schema-sync" style="width:4%">STS</div><div class="schema-src2" style="width:48%">Source II</div></div><div>Commutation statique ultra-rapide, associée à une architecture UPS / STS</div>'
 
     return {
-        "type_inverseur": type_recommande,
-        "mode_commande": commande,
-        "classe": classe,
-        "transition": transition_reelle,
-        "bypass": bypass,
-        "besoin_ups": besoin_ups,
-        "besoin_sts": besoin_sts,
-        "description": description,
-        "notes": notes,
-        "architecture": architecture,
-        "alerte_manuel": alerte_manuel,
-        "schema_html": schema_html,
-        "criticites_selectionnees": criticites_selectionnees,
+        "type_inverseur": type_recommande, "mode_commande": commande,
+        "classe": classe, "transition": transition_reelle, "bypass": bypass,
+        "besoin_ups": besoin_ups, "besoin_sts": besoin_sts, "description": description,
+        "notes": notes, "architecture": architecture, "alerte_manuel": alerte_manuel,
+        "schema_html": schema_html, "criticites_selectionnees": criticites_selectionnees,
         "criticite_dominante": criticite,
     }
 
 # =========================================================
-# PARTIE 1 : CHOIX DU GROUPE ELECTROGENE (un seul type ERP)
+# PARTIE 1 — FORMULAIRE (conteneur unifié)
 # =========================================================
-st.markdown("""
-<div class="info-box">
-    <b>Objectif :</b> guider le choix du niveau de groupe électrogène puis de l'inverseur de source
-    en tenant compte du type d'établissement, du niveau de continuité attendu, de la criticité des usages
-    et des contraintes de disponibilité de l'installation.
-    <br><br>
-    <b>Références prises en compte :</b> exigences normatives, règlement ERP, continuité de service, sécurité des personnes.
-</div>
-""", unsafe_allow_html=True)
+st.markdown('<div class="ps-form-wrap">', unsafe_allow_html=True)
 
-mode_choix = st.radio("Mode de choix du groupe électrogène", ["Détermination automatique améliorée", "Choix manuel contrôlé"], horizontal=True)
+# Titre du formulaire + bouton Réinitialiser en haut à droite
+col_ftitle, col_freset = st.columns([8, 2])
+with col_ftitle:
+    st.markdown('<p class="ps-form-title">Étape 1 — Sélection du groupe électrogène</p>', unsafe_allow_html=True)
+with col_freset:
+    if st.button("↺ Réinitialiser", key="btn_reset"):
+        for k in ["resultat_final","choix_confirme","groupe_confirme",
+                  "inverseur_confirme","inverseur_final","choix_inverseur_resultat"]:
+            st.session_state[k] = None if k not in ["choix_confirme","inverseur_confirme"] else False
+        st.rerun()
+
+st.markdown('<hr class="ps-divider">', unsafe_allow_html=True)
+
+# Mode d'analyse
+st.markdown('<p class="ps-label">Mode d\'analyse</p>', unsafe_allow_html=True)
+mode_choix = st.radio(
+    "mode", ["Détermination automatique améliorée", "Choix manuel contrôlé"],
+    horizontal=True, label_visibility="collapsed"
+)
 
 if mode_choix == "Détermination automatique améliorée":
-    st.markdown("## Étape 1 — Détermination automatique améliorée")
+    st.markdown('<p class="ps-label">Identification de l\'établissement</p>', unsafe_allow_html=True)
     col1, col2 = st.columns(2)
     with col1:
         erp_choice = st.selectbox("Type d'établissement", list(erp_types.keys()))
@@ -1376,24 +977,33 @@ if mode_choix == "Détermination automatique améliorée":
             effectif_total = 0
         else:
             effectif_min = EFFECTIF_MIN_VALABLE.get(code, 1)
-            st.markdown(f'<div class="seuil-info-box"><b>Effectif minimal valable :</b> {effectif_min} personnes</div>', unsafe_allow_html=True)
+            st.markdown(f'<div class="seuil-info-box">Effectif minimal valable pour ce type : <b>{effectif_min} personnes</b></div>', unsafe_allow_html=True)
             effectif_total = st.number_input("Effectif total admissible", min_value=0, step=1, value=0)
+
     effectif_invalide = (code not in TYPES_SPECIAUX) and (effectif_total == 0)
     if effectif_invalide:
-        st.markdown('<div class="impossible-box"><h3>Effectif invalide — Analyse impossible</h3><p>Un effectif de <b>0</b> ne permet pas de réaliser une analyse réglementaire ERP.</p><p>Veuillez saisir un effectif valable.</p></div>', unsafe_allow_html=True)
+        st.markdown('<div class="impossible-box"><h3>Effectif invalide — Analyse impossible</h3><p>Un effectif de <b>0</b> ne permet pas de réaliser une analyse réglementaire ERP. Veuillez saisir un effectif valable.</p></div>', unsafe_allow_html=True)
     else:
         categorie, justification_categorie = determiner_categorie_erp(code, effectif_total)
-        st.markdown("### Fonctions réellement à alimenter")
-        fonctions_selectionnees = st.multiselect("Sélectionnez les fonctions / charges concernées", options=df_fonctions["Fonction"].tolist(), help="Plusieurs fonctions peuvent être retenues.")
-        st.markdown("### Continuité admissible")
-        temps_coupure = st.radio("Temps de coupure maximal admissible pour les charges considérées", [
-            "Coupure longue admissible (> 15 s)",
-            "Coupure courte admissible (10 s < t ≤ 15 s)",
-            "Coupure très courte admissible (0 s < t ≤ 10 s)",
-            "Aucune coupure admissible (0 s)"
-        ], horizontal=False)
-        if st.button("Lancer la détermination", use_container_width=True):
-            niveau_final, justifs, niveau_erp_indicatif, niveau_fct, ups_local_requis = niveau_final_automatique(code, fonctions_selectionnees, temps_coupure)
+        st.markdown('<p class="ps-label">Fonctions à alimenter</p>', unsafe_allow_html=True)
+        fonctions_selectionnees = st.multiselect(
+            "Sélectionnez les fonctions / charges concernées",
+            options=df_fonctions["Fonction"].tolist(),
+            help="Plusieurs fonctions peuvent être retenues."
+        )
+        st.markdown('<p class="ps-label">Continuité admissible</p>', unsafe_allow_html=True)
+        temps_coupure = st.radio(
+            "Temps de coupure maximal admissible",
+            ["Coupure longue admissible (> 15 s)",
+             "Coupure courte admissible (10 s < t <= 15 s)",
+             "Coupure très courte admissible (0 s < t <= 10 s)",
+             "Aucune coupure admissible (0 s)"],
+            label_visibility="collapsed"
+        )
+        st.markdown('<div style="margin-top:24px;"></div>', unsafe_allow_html=True)
+        if st.button("Lancer la détermination automatique", use_container_width=True):
+            niveau_final, justifs, niveau_erp_indicatif, niveau_fct, ups_local_requis = \
+                niveau_final_automatique(code, fonctions_selectionnees, temps_coupure)
             st.session_state.resultat_final = {
                 "mode": "Détermination automatique améliorée",
                 "code": code, "erp_choice": erp_choice, "categorie": categorie,
@@ -1403,19 +1013,16 @@ if mode_choix == "Détermination automatique améliorée":
                 "niveau_erp_indicatif": niveau_erp_indicatif,
                 "niveau_fonctions": niveau_fct,
                 "niveau_final": niveau_final,
-                "details": justifs,
-                "justification_libre": "",
-                "ups_local_requis": ups_local_requis,
-                "effectif_total": effectif_total
+                "details": justifs, "justification_libre": "",
+                "ups_local_requis": ups_local_requis, "effectif_total": effectif_total
             }
-            st.session_state.choix_confirme = False
-            st.session_state.groupe_confirme = None
-            st.session_state.inverseur_confirme = False
-            st.session_state.inverseur_final = None
-            st.session_state.choix_inverseur_resultat = None
+            for k in ["choix_confirme","inverseur_confirme"]:
+                st.session_state[k] = False
+            for k in ["groupe_confirme","inverseur_final","choix_inverseur_resultat"]:
+                st.session_state[k] = None
 
-else:  # Mode manuel
-    st.markdown("## Étape 1 — Choix manuel contrôlé")
+else:  # Manuel
+    st.markdown('<p class="ps-label">Identification de l\'établissement</p>', unsafe_allow_html=True)
     col1, col2 = st.columns(2)
     with col1:
         erp_choice = st.selectbox("Type d'établissement", list(erp_types.keys()), key="manual_erp")
@@ -1426,24 +1033,34 @@ else:  # Mode manuel
             effectif_total = 0
         else:
             effectif_min = EFFECTIF_MIN_VALABLE.get(code, 1)
-            st.markdown(f'<div class="seuil-info-box"><b>Effectif minimal valable :</b> {effectif_min} personnes</div>', unsafe_allow_html=True)
+            st.markdown(f'<div class="seuil-info-box">Effectif minimal valable pour ce type : <b>{effectif_min} personnes</b></div>', unsafe_allow_html=True)
             effectif_total = st.number_input("Effectif total admissible", min_value=0, step=1, value=0, key="manual_eff")
+
     effectif_invalide = (code not in TYPES_SPECIAUX) and (effectif_total == 0)
     if effectif_invalide:
-        st.markdown('<div class="impossible-box"><h3>Effectif invalide — Analyse impossible</h3><p>Un effectif de <b>0</b> ne permet pas de réaliser une analyse réglementaire ERP.</p><p>Veuillez saisir un effectif valable.</p></div>', unsafe_allow_html=True)
+        st.markdown('<div class="impossible-box"><h3>Effectif invalide — Analyse impossible</h3><p>Un effectif de <b>0</b> ne permet pas de réaliser une analyse réglementaire ERP. Veuillez saisir un effectif valable.</p></div>', unsafe_allow_html=True)
     else:
         categorie, justification_categorie = determiner_categorie_erp(code, effectif_total)
         fonctions_selectionnees = []
-        temps_coupure = st.radio("Temps de coupure maximal admissible", [
-            "Coupure longue admissible (> 15 s)",
-            "Coupure courte admissible (10 s < t ≤ 15 s)",
-            "Coupure très courte admissible (0 s < t ≤ 10 s)",
-            "Aucune coupure admissible (0 s)"
-        ], key="manual_time")
-        niveau_minimal, justifs, niveau_erp_indicatif, niveau_fct, ups_local_requis = niveau_minimal_mode_manuel(code, temps_coupure)
+        st.markdown('<p class="ps-label">Continuité admissible</p>', unsafe_allow_html=True)
+        temps_coupure = st.radio(
+            "Temps de coupure",
+            ["Coupure longue admissible (> 15 s)",
+             "Coupure courte admissible (10 s < t <= 15 s)",
+             "Coupure très courte admissible (0 s < t <= 10 s)",
+             "Aucune coupure admissible (0 s)"],
+            key="manual_time", label_visibility="collapsed"
+        )
+        niveau_minimal, justifs, niveau_erp_indicatif, niveau_fct, ups_local_requis = \
+            niveau_minimal_mode_manuel(code, temps_coupure)
         st.markdown(f'<div class="card"><h3>Référence minimale issue de l\'analyse</h3><p><b>Niveau minimal recommandé :</b> {niveau_minimal}</p><p class="small-note">Le choix manuel peut être égal ou supérieur à ce niveau.</p></div>', unsafe_allow_html=True)
-        groupe_manuel = st.selectbox("Choisissez directement le niveau de groupe électrogène", ["Aucun", "Secours", "Sécurité", "Temps Zéro"])
-        justification_client = st.text_area("Justification / remarque du client", placeholder="Exemple : le client impose un niveau supérieur pour des raisons d'exploitation critique.")
+
+        st.markdown('<p class="ps-label">Choix du niveau</p>', unsafe_allow_html=True)
+        groupe_manuel = st.selectbox("Choisissez directement le niveau de groupe électrogène",
+                                     ["Aucun", "Secours", "Sécurité", "Temps Zéro"])
+        justification_client = st.text_area("Justification / remarque du client",
+                                             placeholder="Exemple : le client impose un niveau supérieur pour des raisons d'exploitation critique.")
+
         if groupe_manuel == "Aucun":
             st.error("Vous devez sélectionner un groupe (Secours, Sécurité ou Temps Zéro) pour pouvoir valider.")
             valider_desactive = True
@@ -1454,6 +1071,8 @@ else:  # Mode manuel
             else:
                 st.warning("Le choix manuel est inférieur au niveau minimal déduit de l'analyse.")
             valider_desactive = False
+
+        st.markdown('<div style="margin-top:24px;"></div>', unsafe_allow_html=True)
         if st.button("Valider le choix manuel", use_container_width=True, disabled=valider_desactive):
             st.session_state.resultat_final = {
                 "mode": "Choix manuel contrôlé",
@@ -1466,34 +1085,35 @@ else:  # Mode manuel
                 "niveau_final": groupe_manuel,
                 "niveau_minimal": niveau_minimal,
                 "choix_conforme": conforme,
-                "details": justifs,
-                "justification_libre": justification_client,
-                "ups_local_requis": ups_local_requis,
-                "effectif_total": effectif_total
+                "details": justifs, "justification_libre": justification_client,
+                "ups_local_requis": ups_local_requis, "effectif_total": effectif_total
             }
-            st.session_state.choix_confirme = False
-            st.session_state.groupe_confirme = None
-            st.session_state.inverseur_confirme = False
-            st.session_state.inverseur_final = None
-            st.session_state.choix_inverseur_resultat = None
+            for k in ["choix_confirme","inverseur_confirme"]:
+                st.session_state[k] = False
+            for k in ["groupe_confirme","inverseur_final","choix_inverseur_resultat"]:
+                st.session_state[k] = None
+
+st.markdown('</div>', unsafe_allow_html=True)  # ferme ps-form-wrap
 
 # =========================================================
-# AFFICHAGE RESULTAT (GROUPE) - adapté
+# RÉSULTATS — GROUPE
 # =========================================================
 if st.session_state.resultat_final is not None:
     r = st.session_state.resultat_final
-    st.markdown("## Résultat — Groupe électrogène")
+    st.markdown('<p class="ps-results-title">Résultat — Groupe électrogène</p>', unsafe_allow_html=True)
+
     c1, c2, c3, c4 = st.columns(4)
     with c1:
-        st.markdown(f'<div class="metric-card"><div class="metric-label">Code ERP</div><div class="metric-value">{r["code"]}</div><div class="metric-sub">{r["erp_choice"]}</div></div>', unsafe_allow_html=True)
+        st.markdown(f'<div class="metric-card"><div class="metric-label">Code ERP</div><div class="metric-value">{r["code"]}</div><div class="metric-sub">{r["erp_choice"][:28]}</div></div>', unsafe_allow_html=True)
     with c2:
         val_cat = "N/A" if r["categorie"] is None else r["categorie"]
         st.markdown(f'<div class="metric-card"><div class="metric-label">Catégorie ERP</div><div class="metric-value">{val_cat}</div><div class="metric-sub">Calcul indicatif</div></div>', unsafe_allow_html=True)
     with c3:
         st.markdown(f'<div class="metric-card"><div class="metric-label">Niveau ERP indicatif</div><div class="metric-value">{r["niveau_erp_indicatif"]}</div><div class="metric-sub">Plancher type ERP</div></div>', unsafe_allow_html=True)
     with c4:
-        st.markdown(f'<div class="metric-card"><div class="metric-label">Niveau final retenu</div><div class="metric-value">{r["niveau_final"]}</div><div class="metric-sub">{r["mode"]}</div></div>', unsafe_allow_html=True)
-    st.markdown(f'<div class="card"><h3>Justification catégorie ERP</h3><p>{r["justification_categorie"]}</p></div>', unsafe_allow_html=True)
+        st.markdown(f'<div class="metric-card"><div class="metric-label">Niveau final retenu</div><div class="metric-value">{r["niveau_final"]}</div><div class="metric-sub">{r["mode"][:22]}</div></div>', unsafe_allow_html=True)
+
+    st.markdown(f'<div class="card" style="margin-top:12px;"><h3>Justification catégorie ERP</h3><p>{r["justification_categorie"]}</p></div>', unsafe_allow_html=True)
 
     if r["mode"] == "Choix manuel contrôlé":
         afficher_bloc_resultat("Groupe retenu", r["niveau_final"], r['details']['erp'], r['details']['temps'])
@@ -1503,9 +1123,10 @@ if st.session_state.resultat_final is not None:
     if r["details"].get("remarque_ups"):
         st.markdown(f'<div class="ups-box"><h3>Remarque sur les charges critiques</h3><p>{r["details"]["remarque_ups"]}</p></div>', unsafe_allow_html=True)
 
-    st.markdown("### Confirmation de la partie 1")
-    st.info("Cliquez sur le bouton ci-dessous pour confirmer définitivement le groupe retenu et déverrouiller la partie 2.")
-    if st.button("Confirmer le choix du groupe et déverrouiller la partie 2", use_container_width=True):
+    st.markdown('<p class="ps-label" style="margin-top:28px;">Confirmation de la partie 1</p>', unsafe_allow_html=True)
+    st.info("Cliquez ci-dessous pour confirmer définitivement le groupe retenu et déverrouiller la partie 2.")
+
+    if st.button("Confirmer le groupe et déverrouiller la partie 2", use_container_width=True):
         st.session_state.choix_confirme = True
         st.session_state.groupe_confirme = r["niveau_final"]
         st.session_state.inverseur_confirme = False
@@ -1518,78 +1139,96 @@ if st.session_state.resultat_final is not None:
         st.markdown('<div class="lock-box"><h3>Partie 2 encore verrouillée</h3><p>Veuillez confirmer le groupe retenu pour activer le choix de l\'inverseur.</p></div>', unsafe_allow_html=True)
 
 # =========================================================
-# PARTIE 2 : CHOIX DE L'INVERSEUR DE SOURCES (identique)
+# PARTIE 2 — INVERSEUR
 # =========================================================
 if st.session_state.get("choix_confirme", False) and st.session_state.get("groupe_confirme") is not None:
     st.markdown("---")
-    st.markdown('<div class="section-title">Étape 2 — Choix de l\'inverseur de sources</div>', unsafe_allow_html=True)
+    st.markdown('<div class="ps-form-wrap">', unsafe_allow_html=True)
+    st.markdown('<p class="ps-form-title">Étape 2 — Choix de l\'inverseur de source</p>', unsafe_allow_html=True)
+    st.markdown('<hr class="ps-divider">', unsafe_allow_html=True)
+
     groupe_partie_1 = st.session_state.groupe_confirme
+
+    st.markdown('<p class="ps-label">Mode et paramètres de l\'inverseur</p>', unsafe_allow_html=True)
     col_a, col_b = st.columns(2)
     with col_a:
-        mode_inverseur = st.radio("Mode de choix de l'inverseur", ["Détermination automatique", "Choix manuel contrôlé"], horizontal=True, key="mode_inverseur")
+        mode_inverseur = st.radio("Mode de choix de l'inverseur", ["Détermination automatique", "Choix manuel contrôlé"],
+                                   horizontal=True, key="mode_inverseur")
         coupure_inv = st.selectbox("Temps de coupure admissible", ["< 50 ms", "50 ms à 2 s", "> 2 s"], index=1, key="coupure_inv")
-        transition_inv = st.selectbox("Type de transition souhaité", ["Ouverte", "Retardée (I-O-II)", "Fermée (sans coupure)", "Statique"], index=1, key="transition_inv")
+        transition_inv = st.selectbox("Type de transition souhaité",
+                                       ["Ouverte", "Retardée (I-O-II)", "Fermée (sans coupure)", "Statique"],
+                                       index=1, key="transition_inv")
         maintenance_inv = st.radio("Maintenance sans coupure requise ?", ["Non", "Oui"], horizontal=True, key="maintenance_inv")
     with col_b:
-        criticites_inv = st.multiselect("Niveau de criticité (choix multiple possible)", options=["Vie humaine", "Dommages techniques / données", "Pertes financières / exploitation"], default=["Pertes financières / exploitation"], key="criticite_inv", help="Sélectionnez un ou plusieurs niveaux de criticité.")
+        criticites_inv = st.multiselect(
+            "Niveau de criticité (choix multiple possible)",
+            options=["Vie humaine", "Dommages techniques / données", "Pertes financières / exploitation"],
+            default=["Pertes financières / exploitation"],
+            key="criticite_inv"
+        )
         if len(criticites_inv) > 1:
             dominant = criticite_dominante(criticites_inv)
-            st.markdown(f'<div class="seuil-info-box">Plusieurs criticités sélectionnées. Niveau dominant retenu : <b>{dominant}</b></div>', unsafe_allow_html=True)
+            st.markdown(f'<div class="seuil-info-box">Plusieurs criticités sélectionnées. Dominant : <b>{dominant}</b></div>', unsafe_allow_html=True)
         inverseur_force = None
         classe_force = None
         if mode_inverseur == "Choix manuel contrôlé":
             inverseur_force = st.selectbox("Forcer le type d'inverseur", ["MTSE", "RTSE", "ATSE"], key="inverseur_force")
             classe_force = st.selectbox("Forcer la classe", ["CC", "CB", "PC"], index=2, key="classe_force")
-    if st.button("Lancer le choix de l'inverseur", use_container_width=True):
+
+    st.markdown('<div style="margin-top:24px;"></div>', unsafe_allow_html=True)
+    if st.button("Lancer la recommandation inverseur", use_container_width=True):
         if not criticites_inv:
             st.warning("Veuillez sélectionner au moins un niveau de criticité.")
         else:
             st.session_state.choix_inverseur_resultat = recommander_inverseur(
-                groupe_ge=groupe_partie_1,
-                coupure=coupure_inv,
-                transition=transition_inv,
-                maintenance_sans_coupure=maintenance_inv,
-                criticites_selectionnees=criticites_inv,
-                mode_choix_inv=mode_inverseur,
-                inverseur_force=inverseur_force,
-                classe_force=classe_force
+                groupe_ge=groupe_partie_1, coupure=coupure_inv, transition=transition_inv,
+                maintenance_sans_coupure=maintenance_inv, criticites_selectionnees=criticites_inv,
+                mode_choix_inv=mode_inverseur, inverseur_force=inverseur_force, classe_force=classe_force
             )
             st.session_state.inverseur_confirme = False
             st.session_state.inverseur_final = None
 
+    st.markdown('</div>', unsafe_allow_html=True)
+
     if st.session_state.get("choix_inverseur_resultat") is not None:
         inv = st.session_state.choix_inverseur_resultat
-        st.markdown("## Résultat — Inverseur de source")
+        st.markdown('<p class="ps-results-title">Résultat — Inverseur de source</p>', unsafe_allow_html=True)
+
         m1, m2, m3, m4 = st.columns(4)
         with m1:
             st.markdown(f'<div class="metric-card"><div class="metric-label">Type d\'inverseur</div><div class="metric-value">{inv["type_inverseur"]}</div><div class="metric-sub">Recommandation</div></div>', unsafe_allow_html=True)
         with m2:
-            st.markdown(f'<div class="metric-card"><div class="metric-label">Mode de commande</div><div class="metric-value">{inv["mode_commande"]}</div><div class="metric-sub">Pilotage retenu</div></div>', unsafe_allow_html=True)
+            cmd_short = inv["mode_commande"].split("/")[0].strip()[:14]
+            st.markdown(f'<div class="metric-card"><div class="metric-label">Commande</div><div class="metric-value">{cmd_short}</div><div class="metric-sub">Mode de pilotage</div></div>', unsafe_allow_html=True)
         with m3:
             st.markdown(f'<div class="metric-card"><div class="metric-label">Classe</div><div class="metric-value">{inv["classe"]}</div><div class="metric-sub">Aide à la décision</div></div>', unsafe_allow_html=True)
         with m4:
             bypass_txt = "Oui" if inv["bypass"] else "Non"
             st.markdown(f'<div class="metric-card"><div class="metric-label">Bypass</div><div class="metric-value">{bypass_txt}</div><div class="metric-sub">Maintenance</div></div>', unsafe_allow_html=True)
+
         badges_html = render_inverseur_badges(inv)
         criticites_html = " ".join([f'<span class="mini-badge">{c}</span>' for c in inv.get("criticites_selectionnees", [])])
         if len(inv.get("criticites_selectionnees", [])) > 1:
             criticites_html += f'<br><span class="mini-badge" style="background:#FEF3C7;color:#92400E;border-color:#FCD34D;">Dominant : {inv.get("criticite_dominante","")}</span>'
-        st.markdown(f'<div class="tse-card"><div class="tse-title">{inv["type_inverseur"]}</div><div class="tse-subtitle">{inv["description"]}</div>{badges_html}<div style="margin-top:10px;"><b>Criticité(s) :</b> {criticites_html}</div></div>', unsafe_allow_html=True)
+        st.markdown(f'<div class="tse-card"><div class="tse-title">{inv["type_inverseur"]}</div><div class="tse-subtitle">{inv["description"]}</div>{badges_html}<div style="margin-top:8px;font-size:12px;"><b>Criticité(s) :</b> {criticites_html}</div></div>', unsafe_allow_html=True)
+
         if inv["notes"]:
             st.markdown('<div class="good-box"><h3>Pourquoi ce choix ?</h3><ul>' + "".join([f"<li>{n}</li>" for n in inv["notes"]]) + "</ul></div>", unsafe_allow_html=True)
         if inv["architecture"]:
-            st.markdown('<div class="card"><h3>Architecture conseillée</h3><ul>' + "".join([f"<li>{a}</li>" for a in inv["architecture"]]) + "</ul></div>", unsafe_allow_html=True)
+            st.markdown('<div class="card"><h3>Architecture conseillée</h3><ul style="margin:0;padding-left:18px;font-size:13px;color:var(--muted);line-height:1.65;">' + "".join([f"<li>{a}</li>" for a in inv["architecture"]]) + "</ul></div>", unsafe_allow_html=True)
+
         st.markdown(f'<div class="schema-box"><h3>Schéma simplifié de transfert</h3>{inv["schema_html"]}</div>', unsafe_allow_html=True)
+
         if inv["besoin_ups"] or inv["besoin_sts"]:
             texte_archi = []
-            if inv["besoin_ups"]:
-                texte_archi.append("ajouter une UPS / ASI locale pour les charges non interruptibles")
-            if inv["besoin_sts"]:
-                texte_archi.append("prévoir une architecture STS pour les charges ultra-sensibles")
-            st.markdown(f'<div class="warn-box"><h3>Remarque importante</h3><p><b>Complément recommandé :</b> {" ; ".join(texte_archi)}.</p></div>', unsafe_allow_html=True)
-        if inv["alerte_manuel"]:
-            st.markdown(f'<div class="danger-box"><h3>Alerte sur le choix manuel</h3><p>{inv["alerte_manuel"]}</p></div>', unsafe_allow_html=True)
+            if inv["besoin_ups"]: texte_archi.append("ajouter une UPS / ASI locale pour les charges non interruptibles")
+            if inv["besoin_sts"]: texte_archi.append("prévoir une architecture STS pour les charges ultra-sensibles")
+            st.markdown(f'<div class="warn-box"><h3>Complément d\'architecture requis</h3><p>{" ; ".join(texte_archi)}.</p></div>', unsafe_allow_html=True)
 
+        if inv["alerte_manuel"]:
+            st.markdown(f'<div class="danger-box"><h3>Alerte — Choix manuel</h3><p>{inv["alerte_manuel"]}</p></div>', unsafe_allow_html=True)
+
+        st.markdown('<div style="margin-top:20px;"></div>', unsafe_allow_html=True)
         if st.button("Confirmer le choix de l'inverseur", use_container_width=True):
             st.session_state.inverseur_confirme = True
             st.session_state.inverseur_final = inv
@@ -1597,45 +1236,45 @@ if st.session_state.get("choix_confirme", False) and st.session_state.get("group
         if st.session_state.get("inverseur_confirme", False) and st.session_state.get("inverseur_final") is not None:
             afficher_synthese_finale(st.session_state.groupe_confirme, st.session_state.inverseur_final)
 
-            # Bouton d'export PDF après la synthèse
-            col_pdf1, col_pdf2, col_pdf3 = st.columns([1,2,1])
+            col_pdf1, col_pdf2, col_pdf3 = st.columns([1, 2, 1])
             with col_pdf2:
-                if st.button("Exporter les résultats en PDF", use_container_width=True):
+                if st.button("Exporter le rapport en PDF", use_container_width=True):
                     r = st.session_state.resultat_final
-                    inv = st.session_state.inverseur_final
+                    inv_f = st.session_state.inverseur_final
                     entrees = {
                         "Type ERP": r["erp_choice"],
                         "Effectif total": r.get("effectif_total", "Non renseigné"),
                         "Fonctions sélectionnées": ", ".join(r["fonctions_selectionnees"]) if r["fonctions_selectionnees"] else "Aucune",
-                        "Temps de coupure": r["temps_coupure"]
+                        "Temps de coupure": r["temps_coupure"],
+                        "Mode d'analyse": r["mode"],
                     }
                     resultats_groupe = {
                         "Niveau retenu": r["niveau_final"],
                         "Justification ERP": r["details"]["erp"],
-                        "Analyse des fonctions": r["details"]["fonctions"] if r["mode"] != "Choix manuel contrôlé" else r["details"]["temps"]
+                        "Analyse": r["details"]["fonctions"] if r["mode"] != "Choix manuel contrôlé" else r["details"]["temps"],
                     }
                     resultats_inverseur = {
-                        "Type d'inverseur": inv["type_inverseur"],
-                        "Classe": inv["classe"],
-                        "Mode de commande": inv["mode_commande"],
-                        "Transition": inv["transition"],
-                        "Bypass": "Oui" if inv["bypass"] else "Non",
-                        "UPS locale": "Oui" if inv["besoin_ups"] else "Non",
-                        "STS": "Oui" if inv["besoin_sts"] else "Non"
+                        "Type d'inverseur": inv_f["type_inverseur"],
+                        "Classe": inv_f["classe"],
+                        "Mode de commande": inv_f["mode_commande"],
+                        "Type de transition": inv_f["transition"],
+                        "Bypass de maintenance": "Oui" if inv_f["bypass"] else "Non",
+                        "UPS locale requise": "Oui" if inv_f["besoin_ups"] else "Non",
+                        "Architecture STS": "Oui" if inv_f["besoin_sts"] else "Non",
                     }
                     href = generer_pdf(entrees, resultats_groupe, resultats_inverseur)
                     st.markdown(href, unsafe_allow_html=True)
-                    st.success("Rapport PDF généré avec succès ! Cliquez sur le lien ci-dessus pour le télécharger.")
+                    st.success("Rapport PDF généré. Cliquez sur le lien ci-dessus pour le télécharger.")
 
 else:
     st.markdown("---")
-    st.markdown('<div class="warning-box"><h3>Partie 2 verrouillée</h3><p>Veuillez d\'abord confirmer le choix du groupe électrogène dans la partie 1 pour activer le choix de l\'inverseur.</p></div>', unsafe_allow_html=True)
+    st.markdown('<div class="warning-box"><h3>Partie 2 verrouillée</h3><p>Confirmez d\'abord le groupe électrogène en partie 1 pour activer le choix de l\'inverseur.</p></div>', unsafe_allow_html=True)
 
 # =========================================================
-# NOTE IMPORTANTE
+# NOTE DE BAS DE PAGE
 # =========================================================
 st.markdown("""
-<div class="info-box">
+<div class="info-box" style="margin-top:36px;">
     <b>Note importante :</b> cette interface constitue une <b>aide à la décision</b> fondée sur une logique construite
     dans le respect des normes techniques applicables et du règlement des ERP.
     La validation finale doit rester cohérente avec l'étude détaillée du projet, les schémas retenus,
